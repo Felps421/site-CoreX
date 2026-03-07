@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreXFit AI - Inteligência Artificial Fitness</title>
+    <meta name="description"
+        content="CoreXFit AI calcula automaticamente sua dieta, treino e evolução com inteligência artificial.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #080b14;
+            --card: #0d1120;
+            --border: #1a1f35;
+            --fg: #f0f0f5;
+            --muted: #6b7194;
+            --primary: #2d7aff;
+            --primary-glow: 0 0 20px rgba(45, 122, 255, .4), 0 0 60px rgba(45, 122, 255, .1);
+            --primary-glow-strong: 0 0 20px rgba(45, 122, 255, .6), 0 0 80px rgba(45, 122, 255, .2);
+            --gradient: linear-gradient(135deg, #2d7aff, #6c5ce7);
+            --font-body: 'Inter', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        ul {
+            list-style: none
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        .text-gradient {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .glow-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 12px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--primary-glow);
+            transition: all .3s;
+        }
+
+        .glow-btn:hover {
+            box-shadow: var(--primary-glow-strong);
+            filter: brightness(1.1)
+        }
+
+        .glow-btn-large {
+            font-size: 1.1rem;
+            padding: 18px 40px
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            background: transparent;
+            transition: all .3s;
+        }
+
+        .btn-outline:hover {
+            background: var(--card)
+        }
+
+        .card-glass {
+            background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px)
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0
+        }
+
+        .dot-ring {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(45, 122, 255, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .dot-ring .dot {
+            width: 8px;
+            height: 8px
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(8, 11, 20, .85);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border)
+        }
+
+        nav .inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        nav .logo {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700
+        }
+
+        nav .links {
+            display: flex;
+            gap: 32px;
+            font-size: .9rem;
+            color: var(--muted)
+        }
+
+        nav .links button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: .9rem;
+            font-family: var(--font-body);
+            transition: color .2s
+        }
+
+        nav .links button:hover {
+            color: var(--fg)
+        }
+
+        nav .cta {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+            font-size: .85rem;
+            box-shadow: var(--primary-glow);
+            transition: all .3s
+        }
+
+        nav .cta:hover {
+            box-shadow: var(--primary-glow-strong);
+            filter: brightness(1.1)
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--fg);
+            font-size: 1.5rem;
+            cursor: pointer
+        }
+
+        /* HERO */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden
+        }
+
+        #hero video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        #hero .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 11, 20, .78)
+        }
+
+        #hero .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 720px;
+            padding: 0 20px
+        }
+
+        #hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 24px
+        }
+
+        #hero p {
+            color: var(--muted);
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        #hero .btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 100px 0
+        }
+
+        section h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 48px
+        }
+
+        /* ABOUT */
+        #sobre .about-card {
+            padding: 40px;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto
+        }
+
+        #sobre .about-card p {
+            margin-bottom: 16px
+        }
+
+        #sobre .about-card .feature-list {
+            margin-top: 16px
+        }
+
+        #sobre .about-card .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--fg);
+            margin-bottom: 10px
+        }
+
+        /* SCREENS */
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-bottom: 48px
+        }
+
+        .screen-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform .3s
+        }
+
+        .screen-card:hover {
+            transform: scale(1.03)
+        }
+
+        .screen-card .img-wrap {
+            height: 240px;
+            overflow: hidden
+        }
+
+        .screen-card .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform .5s
+        }
+
+        .screen-card:hover .img-wrap img {
+            transform: scale(1.05)
+        }
+
+        .screen-card .info {
+            padding: 24px
+        }
+
+        .screen-card .info h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .screen-card .info p {
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.6
+        }
+
+        /* FEATURE ROW */
+        .feature-row {
+            display: flex;
+            gap: 48px;
+            align-items: center;
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        .feature-row.reverse {
+            flex-direction: row-reverse
+        }
+
+        .feature-row .img-side {
+            flex: 1
+        }
+
+        .feature-row .img-side .card-glass {
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 420px;
+            margin: 0 auto
+        }
+
+        .feature-row .text-side {
+            flex: 1
+        }
+
+        .feature-row .text-side h2 {
+            text-align: left;
+            margin-bottom: 24px
+        }
+
+        .feature-row .text-side p {
+            color: var(--muted);
+            margin-bottom: 24px;
+            line-height: 1.7
+        }
+
+        .feature-row .text-side ul {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .feature-row .text-side ul li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: .95rem
+        }
+
+        /* CTA */
+        #cta {
+            position: relative;
+            text-align: center
+        }
+
+        #cta::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(45, 122, 255, .06) 0%, transparent 70%)
+        }
+
+        #cta .content {
+            position: relative;
+            z-index: 2
+        }
+
+        #cta p {
+            color: var(--muted);
+            font-size: 1.15rem;
+            margin-bottom: 40px
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: .85rem
+        }
+
+        /* MOBILE NAV */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: rgba(8, 11, 20, .97);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 99
+        }
+
+        .mobile-menu.open {
+            display: flex
+        }
+
+        .mobile-menu button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            font-family: var(--font-body);
+            padding: 8px 0
+        }
+
+        .mobile-menu button:hover {
+            color: var(--fg)
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            nav .links {
+                display: none
+            }
+
+            .hamburger {
+                display: block
+            }
+
+            .screens-grid {
+                grid-template-columns: 1fr
+            }
+
+            .feature-row,
+            .feature-row.reverse {
+                flex-direction: column
+            }
+
+            .feature-row .text-side h2 {
+                text-align: center
+            }
+        }
+
+        @media(max-width:600px) {
+            section {
+                padding: 60px 0
+            }
+
+            #hero h1 {
+                font-size: 1.8rem
+            }
+
+            .glow-btn,
+            .btn-outline {
+                padding: 12px 24px;
+                font-size: .9rem
+            }
+        }
+
+        .testimonials {
+  padding: 80px 20px;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+}
+
+.testimonials h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.testimonial-container {
+  display: flex;
+  gap: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.testimonial {
+  min-width: 300px;
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 12px;
+  transition: transform 0.4s;
+}
+
+.testimonial:hover {
+  transform: translateY(-10px);
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin: 0 auto 10px;
+}
+
+.testimonial span {
+  color: #22c55e;
+  font-size: 14px;
+}
+
+.testimonial p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+    </style>
+</head>
+
+<body>
+
+   <nav>
+    <div class="inner">
+        <span class="logo text-gradient">CoreXFit AI</span>
+
+        <div class="links">
+            <button onclick="scrollSection('hero')">Casa</button>
+            <button onclick="scrollSection('dieta')">Dieta por IA</button>
+            <button onclick="scrollSection('treino')">Treino por IA</button>
+            <button onclick="scrollSection('diferencial')">Nosso Diferencial</button>
+        </div>
+
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+        <a href="https://cocky-corex-fit.base44.app"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="cta">
+           Acessar Aplicativo
+        </a>
+    </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <button onclick="scrollSection('hero');toggleMenu()">Casa</button>
+    <button onclick="scrollSection('dieta');toggleMenu()">Dieta por IA</button>
+    <button onclick="scrollSection('treino');toggleMenu()">Treino por IA</button>
+    <button onclick="scrollSection('diferencial');toggleMenu()">Nosso Diferencial</button>
+</div>
+
+
+    <!-- HERO -->
+    <section id="hero">
+        <video autoplay loop muted playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+        <div class="content fade-up">
+            <h1>Inteligência artificial aplicada ao <span class="text-gradient">seu corpo</span></h1>
+            <p>O CoreXFit AI calcula automaticamente sua dieta, treino e evolução de acordo com suas metas, restrições e
+                objetivos.</p>
+            <div class="btns">
+                <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
+                    class="glow-btn">Começar Agora</a>
+                <button class="btn-outline" onclick="scrollTo('sobre')">Ver Como Funciona</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre">
+        <div class="container">
+            <h2 class="fade-up">O que é o <span class="text-gradient">CoreXFit AI</span>?</h2>
+            <div class="card-glass about-card fade-up">
+                <p>O CoreXFit AI é um aplicativo de personal trainer com inteligência artificial que cria dietas e
+                    planos de treino personalizados de acordo com seus objetivos, limitações e rotina.</p>
+                <p>O aplicativo calcula automaticamente calorias, proteínas, carboidratos e gorduras ideais para seu
+                    corpo e ajusta tudo automaticamente conforme sua evolução.</p>
+                <p>Com tecnologia de IA, o CoreXFit AI analisa seus dados e cria estratégias personalizadas para:</p>
+                <ul class="feature-list">
+                    <li><span class="dot"></span> Ganho de massa muscular</li>
+                    <li><span class="dot"></span> Perda de gordura</li>
+                    <li><span class="dot"></span> Manutenção de peso</li>
+                    <li><span class="dot"></span> Melhora da saúde geral</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- TELAS -->
+    <section id="telas">
+        <div class="container">
+            <h2 class="fade-up">Telas do <span class="text-gradient">Aplicativo</span></h2>
+            <div class="screens-grid">
+                <div class="card-glass screen-card fade-up">
+                    <div class="img-wrap"><img src="imagem_pagina.jpeg" alt="Página Inicial"></div>
+                    <div class="info">
+                        <h3>Página Inicial</h3>
+                        <p>Painel inteligente com acompanhamento de calorias, hidratação, metas diárias e evolução do
+                            usuário.</p>
+                    </div>
+                </div>
+                <div class="card-glass screen-card fade-up">
+                    <div class="img-wrap"><img src="imagem_progresso_macro.jpeg" alt="Dieta por IA"></div>
+                    <div class="info">
+                        <h3>Dieta por IA</h3>
+                        <p>O sistema calcula automaticamente sua dieta com base em seu objetivo: Ganhar massa, Perder
+                            peso, Manter peso, Melhorar saúde.</p>
+                    </div>
+                </div>
+                <div class="card-glass screen-card fade-up">
+                    <div class="img-wrap"><img src="imagem_treino.jpeg" alt="Treino por IA"></div>
+                    <div class="info">
+                        <h3>Treino por IA</h3>
+                        <p>Treinos personalizados criados por inteligência artificial de acordo com seu objetivo.</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center" class="fade-up">
+                <button class="btn-outline" onclick="scrollTo('dieta')"
+                    style="border-color:var(--primary);color:var(--primary)">Ver mais sobre o aplicativo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIETA -->
+    <section id="dieta">
+        <div class="feature-row fade-up">
+            <div class="img-side">
+                <div class="card-glass"><img src="imagem_progresso_macro.jpeg" alt="Dieta Inteligente"></div>
+            </div>
+            <div class="text-side">
+                <h2><span class="text-gradient">Dieta Inteligente com IA</span></h2>
+                <p>O CoreXFit AI cria automaticamente sua dieta ideal. Ele calcula calorias, proteínas, carboidratos e
+                    gorduras — tudo ajustado automaticamente conforme seu objetivo.</p>
+                <ul>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para bulking</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para cutting</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para manutenção</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Ajuste automático de macros</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- TREINO -->
+    <section id="treino">
+        <div class="feature-row reverse fade-up">
+            <div class="img-side">
+                <div class="card-glass"><img src="imagem_treino.jpeg" alt="Treino com IA"></div>
+            </div>
+            <div class="text-side">
+                <h2><span class="text-gradient">Plano de Treino com IA</span></h2>
+                <p>O CoreXFit AI cria automaticamente seu plano de treino personalizado.</p>
+                <ul>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Treinos personalizados</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Ajustados ao seu objetivo</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Organização semanal</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Treinos de segunda a sexta</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Dia de descanso automático incluído</li>
+                    <li><span class="dot-ring"><span class="dot"></span></span> Evolução progressiva dos exercícios</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIFERENCIAL -->
+    <section id="diferencial">
+        <div class="container">
+            <h2 class="fade-up">Nosso <span class="text-gradient">Diferencial</span></h2>
+            <div class="feature-row fade-up">
+                <div class="img-side">
+                    <div class="card-glass"><img src="imagem_camera.jpeg" alt="IA Vision Camera"></div>
+                </div>
+                <div class="text-side">
+                    <p style="font-size:1.2rem;font-weight:600;color:var(--fg);margin-bottom:16px">Com o CoreXFit AI,
+                        você pode simplesmente tirar uma foto do alimento.</p>
+                    <p>A inteligência artificial identifica o alimento automaticamente e calcula:</p>
+                    <ul>
+                        <li><span class="dot-ring"><span class="dot"></span></span> Calorias</li>
+                        <li><span class="dot-ring"><span class="dot"></span></span> Proteínas</li>
+                        <li><span class="dot-ring"><span class="dot"></span></span> Carboidratos</li>
+                        <li><span class="dot-ring"><span class="dot"></span></span> Gorduras</li>
+                    </ul>
+                    <p style="margin-top:20px">E adiciona automaticamente na sua meta diária.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+<section class="testimonials">
+  <h2>Resultados de Quem Usa o CoreXFit AI</h2>
+
+  <div class="testimonial-container" id="testimonialContainer">
+
+    <div class="testimonial">
+      <div class="avatar">LF</div>
+      <h3>Lucas Ferreira</h3>
+      <span>Ganhou 8kg de massa muscular</span>
+      <p>"Em 4 meses usando o CoreXFit AI, ganhei 8kg de massa muscular sem precisar de personal trainer. A IA ajustou minha dieta toda semana automaticamente!"</p>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">CS</div>
+      <h3>Camila Santos</h3>
+      <span>Perdeu 12kg de gordura</span>
+      <p>"Nunca imaginei que um app pudesse substituir meu nutricionista. O CoreXFit AI calculou tudo certinho e eu perdi 12kg em 5 meses!"</p>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">RO</div>
+      <h3>Rafael Oliveira</h3>
+      <span>Atleta amador</span>
+      <p>"A função de escanear alimentos com a câmera é sensacional. Tiro a foto e ele já adiciona tudo no meu diário. Praticidade total!"</p>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">JC</div>
+      <h3>Juliana Costa</h3>
+      <span>Mãe fitness</span>
+      <p>"Com a rotina corrida, o CoreXFit AI me deu treinos de 40 minutos super eficientes. Melhor investimento que fiz pra minha saúde!"</p>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">BA</div>
+      <h3>Bruno Almeida</h3>
+      <span>Perdeu 20kg em 6 meses</span>
+      <p>"O app ajustou meus macros automaticamente quando mudei meu objetivo de cutting pra manutenção. Inteligente demais!"</p>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">ML</div>
+      <h3>Mariana Lima</h3>
+      <span>Personal Trainer</span>
+      <p>"Eu uso o CoreXFit AI até com meus alunos. A precisão dos cálculos e a personalização dos treinos é impressionante."</p>
+    </div>
+
+  </div>
+</section>
+
+
+    <!-- CTA -->
+    <section id="cta">
+        <div class="content fade-up">
+            <h2>Transforme seu corpo com <span class="text-gradient">inteligência artificial</span>.</h2>
+            <p>Comece agora sua jornada fitness com o CoreXFit AI.</p>
+            <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
+                class="glow-btn glow-btn-large">Acessar o Aplicativo</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>© 2026 CoreXFit AI. Todos os direitos reservados.</footer>
+
+    <script>
+        function scrollTo(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open') }
+
+        // Fade-up on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
+        }, { threshold: 0.15, rootMargin: '-40px' });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Hero fade-up on load
+        window.addEventListener('load', () => {
+            document.querySelector('#hero .fade-up')?.classList.add('visible');
+        });
+
+        const container = document.getElementById("testimonialContainer");
+
+let scrollAmount = 0;
+
+function autoScroll() {
+  scrollAmount += 1;
+
+  if (scrollAmount >= container.scrollWidth / 2) {
+    scrollAmount = 0;
+  }
+
+  container.scrollTo({
+    left: scrollAmount,
+    behavior: "smooth"
+  });
+}
+
+setInterval(autoScroll, 40);
+
+function scrollSection(id) {
+    const section = document.getElementById(id);
+
+    if (section) {
+        section.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+}
+
+    </script>
+</body>
+
+</html>
