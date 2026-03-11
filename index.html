@@ -14,24 +14,34 @@
         rel="stylesheet">
     <style>
 
-        #botaoMusica{
+.music-player{
 position:fixed;
-bottom:20px;
-right:20px;
-background:#2563eb;
+bottom:25px;
+right:25px;
+width:55px;
+height:55px;
+border-radius:50%;
+background:linear-gradient(135deg,#2563eb,#3b82f6);
+display:flex;
+align-items:center;
+justify-content:center;
 color:white;
-border:none;
-padding:10px 18px;
-border-radius:25px;
-font-size:14px;
+font-size:20px;
 cursor:pointer;
-box-shadow:0 0 10px rgba(37,99,235,0.6);
+box-shadow:0 10px 25px rgba(37,99,235,0.6);
 transition:0.3s;
+z-index:999;
 }
 
-#botaoMusica:hover{
-background:#1d4ed8;
+.music-player:hover{
+transform:scale(1.1);
+box-shadow:0 15px 35px rgba(37,99,235,0.8);
 }
+
+.music-icon{
+pointer-events:none;
+}
+
 
         *,
         *::before,
@@ -622,15 +632,7 @@ background:#1d4ed8;
 </head>
 
 <body>
-<!-- Música do site -->
-<audio id="musicaFundo" loop>
-    <source src="CoreX AI.mp3" type="audio/mpeg">
-</audio>
 
-<!-- Botão música -->
-<button id="botaoMusica" onclick="toggleMusica()">
-🔊 Música
-</button>
 
    <nav>
     <div class="inner">
@@ -910,28 +912,42 @@ function scrollSection(id) {
 
     </script>
 
-    <script>
+   <!-- PLAYER DE MÚSICA -->
 
-let musica = document.getElementById("musicaFundo");
-let botao = document.getElementById("botaoMusica");
-let tocando = false;
+<div class="music-player" onclick="toggleMusic()">
+  <div class="music-icon" id="musicIcon">▶</div>
+</div>
 
-function toggleMusica(){
+<audio id="bgMusic" loop>
+  <source src="corex-ai.mp3" type="audio/mpeg">
+</audio>
 
-if(tocando){
-    musica.pause();
-    botao.innerHTML = "🔇 Música";
-    tocando = false;
+
+<script>
+
+const music = document.getElementById("bgMusic");
+const icon = document.getElementById("musicIcon");
+
+let playing = false;
+
+function toggleMusic(){
+
+if(playing){
+music.pause();
+icon.innerHTML = "▶";
+playing = false;
+
 }else{
-    musica.play();
-    botao.innerHTML = "🔊 Música";
-    tocando = true;
+music.volume = 0.4;
+music.play();
+icon.innerHTML = "⏸";
+playing = true;
 }
 
 }
 
 </script>
-
+    
 </body>
 
 </html>
