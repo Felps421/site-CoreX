@@ -14,6 +14,17 @@
         rel="stylesheet">
     <style>
 
+#trail{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:9999;
+}
+
+
 .music-player{
 position:fixed;
 bottom:25px;
@@ -626,6 +637,56 @@ pointer-events:none;
   line-height: 1.6;
 }
 
+/* BOTÕES FUTURISTAS */
+
+.btn-animado{
+position:relative;
+overflow:hidden;
+transition:all .3s ease;
+}
+
+/* seta aparecendo */
+.btn-animado::after{
+content:"→";
+position:absolute;
+right:-25px;
+top:50%;
+transform:translateY(-50%);
+opacity:0;
+font-size:18px;
+transition:all .3s ease;
+}
+
+.btn-animado:hover::after{
+right:15px;
+opacity:1;
+}
+
+/* leve movimento */
+.btn-animado:hover{
+transform:translateY(-3px) scale(1.03);
+}
+
+/* brilho passando */
+.btn-animado::before{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,0.35),
+transparent
+);
+transition:0.6s;
+}
+
+.btn-animado:hover::before{
+left:100%;
+}
 
 
     </style>
@@ -633,6 +694,7 @@ pointer-events:none;
 
 <body>
 
+<canvas id="trail"></canvas>
 
    <nav>
     <div class="inner">
@@ -676,8 +738,8 @@ pointer-events:none;
                 objetivos.</p>
             <div class="btns">
                 <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
-                    class="glow-btn">Começar Agora</a>
-                <button class="btn-outline" onclick="scrollTo('sobre')">Ver Como Funciona</button>
+                    class="glow-btn btn-animado">Começar Agora</a>
+                <button class="btn-outline btn-animado" onclick="scrollTo('sobre')">Ver Como Funciona</button>
             </div>
         </div>
     </section>
@@ -732,7 +794,7 @@ pointer-events:none;
                 </div>
             </div>
             <div style="text-align:center" class="fade-up">
-                <button class="btn-outline" onclick="scrollTo('dieta')"
+                <button class="btn-outline btn-animado"onclick="scrollTo('dieta')"
                     style="border-color:var(--primary);color:var(--primary)">Ver mais sobre o aplicativo</button>
             </div>
         </div>
@@ -859,7 +921,7 @@ pointer-events:none;
             <h2>Transforme seu corpo com <span class="text-gradient">inteligência artificial</span>.</h2>
             <p>Comece agora sua jornada fitness com o CoreXFit AI.</p>
             <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
-                class="glow-btn glow-btn-large">Acessar o Aplicativo</a>
+                class="glow-btn glow-btn-large btn-animado">Acessar o Aplicativo</a>
         </div>
     </section>
 
@@ -948,6 +1010,54 @@ playing = true;
 
 </script>
     
+<script>
+
+const canvas = document.getElementById("trail");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let points = [];
+
+document.addEventListener("mousemove", function(e){
+
+points.push({
+x:e.clientX,
+y:e.clientY,
+life:20
+});
+
+});
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+points.forEach((p,index)=>{
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,2,0,Math.PI*2);
+ctx.fillStyle="rgba(59,130,246,"+(p.life/20)+")";
+ctx.fill();
+
+p.life--;
+
+if(p.life<=0){
+points.splice(index,1);
+}
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+
 </body>
 
 </html>
