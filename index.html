@@ -2,1061 +2,3350 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoreXFit AI - Inteligência Artificial Fitness</title>
-    <meta name="description"
-        content="CoreXFit AI calcula automaticamente sua dieta, treino e evolução com inteligência artificial.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-    <style>
-
-#trail{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:9999;
-}
-
-
-.music-player{
-position:fixed;
-bottom:25px;
-right:25px;
-width:55px;
-height:55px;
-border-radius:50%;
-background:linear-gradient(135deg,#2563eb,#3b82f6);
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-size:20px;
-cursor:pointer;
-box-shadow:0 10px 25px rgba(37,99,235,0.6);
-transition:0.3s;
-z-index:999;
-}
-
-.music-player:hover{
-transform:scale(1.1);
-box-shadow:0 15px 35px rgba(37,99,235,0.8);
-}
-
-.music-icon{
-pointer-events:none;
-}
-
-
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box
-        }
-
-        :root {
-            --bg: #080b14;
-            --card: #0d1120;
-            --border: #1a1f35;
-            --fg: #f0f0f5;
-            --muted: #6b7194;
-            --primary: #2d7aff;
-            --primary-glow: 0 0 20px rgba(45, 122, 255, .4), 0 0 60px rgba(45, 122, 255, .1);
-            --primary-glow-strong: 0 0 20px rgba(45, 122, 255, .6), 0 0 80px rgba(45, 122, 255, .2);
-            --gradient: linear-gradient(135deg, #2d7aff, #6c5ce7);
-            --font-body: 'Inter', sans-serif;
-            --font-display: 'Space Grotesk', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-body);
-            line-height: 1.6;
-            overflow-x: hidden
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit
-        }
-
-        ul {
-            list-style: none
-        }
-
-        img {
-            max-width: 100%;
-            display: block
-        }
-
-        .container {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 20px
-        }
-
-        .text-gradient {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text
-        }
-
-        .glow-btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 12px;
-            background: var(--primary);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--primary-glow);
-            transition: all .3s;
-        }
-
-        .glow-btn:hover {
-            box-shadow: var(--primary-glow-strong);
-            filter: brightness(1.1)
-        }
-
-        .glow-btn-large {
-            font-size: 1.1rem;
-            padding: 18px 40px
-        }
-
-        .btn-outline {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            color: var(--fg);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            background: transparent;
-            transition: all .3s;
-        }
-
-        .btn-outline:hover {
-            background: var(--card)
-        }
-
-        .card-glass {
-            background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px)
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary);
-            flex-shrink: 0
-        }
-
-        .dot-ring {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: rgba(45, 122, 255, .15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0
-        }
-
-        .dot-ring .dot {
-            width: 8px;
-            height: 8px
-        }
-
-        .fade-up {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity .7s ease, transform .7s ease
-        }
-
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0)
-        }
-
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(8, 11, 20, .85);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border)
-        }
-
-        nav .inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 20px
-        }
-
-        nav .logo {
-            font-family: var(--font-display);
-            font-size: 1.25rem;
-            font-weight: 700
-        }
-
-        nav .links {
-            display: flex;
-            gap: 32px;
-            font-size: .9rem;
-            color: var(--muted)
-        }
-
-        nav .links button {
-            background: none;
-            border: none;
-            color: var(--muted);
-            cursor: pointer;
-            font-size: .9rem;
-            font-family: var(--font-body);
-            transition: color .2s
-        }
-
-        nav .links button:hover {
-            color: var(--fg)
-        }
-
-        nav .cta {
-            padding: 10px 20px;
-            border-radius: 10px;
-            background: var(--primary);
-            color: #fff;
-            font-weight: 600;
-            font-size: .85rem;
-            box-shadow: var(--primary-glow);
-            transition: all .3s
-        }
-
-        nav .cta:hover {
-            box-shadow: var(--primary-glow-strong);
-            filter: brightness(1.1)
-        }
-
-        .hamburger {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--fg);
-            font-size: 1.5rem;
-            cursor: pointer
-        }
-
-        /* HERO */
-        #hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden
-        }
-
-        #hero video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover
-        }
-
-        #hero .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(8, 11, 20, .78)
-        }
-
-        #hero .content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 720px;
-            padding: 0 20px
-        }
-
-        #hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            line-height: 1.15;
-            margin-bottom: 24px
-        }
-
-        #hero p {
-            color: var(--muted);
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto
-        }
-
-        #hero .btns {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap
-        }
-
-        /* SECTIONS */
-        section {
-            padding: 100px 0
-        }
-
-        section h2 {
-            font-family: var(--font-display);
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 48px
-        }
-
-        /* ABOUT */
-        #sobre .about-card {
-            padding: 40px;
-            color: var(--muted);
-            font-size: 1rem;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto
-        }
-
-        #sobre .about-card p {
-            margin-bottom: 16px
-        }
-
-        #sobre .about-card .feature-list {
-            margin-top: 16px
-        }
-
-        #sobre .about-card .feature-list li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--fg);
-            margin-bottom: 10px
-        }
-
-        /* SCREENS */
-        .screens-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
-            margin-bottom: 48px
-        }
-
-        .screen-card {
-            border-radius: 16px;
-            overflow: hidden;
-            transition: transform .3s
-        }
-
-        .screen-card:hover {
-            transform: scale(1.03)
-        }
-
-        .screen-card .img-wrap {
-            height: 240px;
-            overflow: hidden
-        }
-
-        .screen-card .img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            transition: transform .5s
-        }
-
-        .screen-card:hover .img-wrap img {
-            transform: scale(1.05)
-        }
-
-        .screen-card .info {
-            padding: 24px
-        }
-
-        .screen-card .info h3 {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 8px
-        }
-
-        .screen-card .info p {
-            color: var(--muted);
-            font-size: .9rem;
-            line-height: 1.6
-        }
-
-        /* FEATURE ROW */
-        .feature-row {
-            display: flex;
-            gap: 48px;
-            align-items: center;
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 20px
-        }
-
-        .feature-row.reverse {
-            flex-direction: row-reverse
-        }
-
-        .feature-row .img-side {
-            flex: 1
-        }
-
-        .feature-row .img-side .card-glass {
-            border-radius: 16px;
-            overflow: hidden;
-            max-width: 420px;
-            margin: 0 auto
-        }
-
-        .feature-row .text-side {
-            flex: 1
-        }
-
-        .feature-row .text-side h2 {
-            text-align: left;
-            margin-bottom: 24px
-        }
-
-        .feature-row .text-side p {
-            color: var(--muted);
-            margin-bottom: 24px;
-            line-height: 1.7
-        }
-
-        .feature-row .text-side ul {
-            display: flex;
-            flex-direction: column;
-            gap: 12px
-        }
-
-        .feature-row .text-side ul li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: .95rem
-        }
-
-        /* CTA */
-        #cta {
-            position: relative;
-            text-align: center
-        }
-
-        #cta::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at center, rgba(45, 122, 255, .06) 0%, transparent 70%)
-        }
-
-        #cta .content {
-            position: relative;
-            z-index: 2
-        }
-
-        #cta p {
-            color: var(--muted);
-            font-size: 1.15rem;
-            margin-bottom: 40px
-        }
-
-        /* FOOTER */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 32px 0;
-            text-align: center;
-            color: var(--muted);
-            font-size: .85rem
-        }
-
-        /* MOBILE NAV */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 64px;
-            left: 0;
-            right: 0;
-            background: rgba(8, 11, 20, .97);
-            -webkit-backdrop-filter: blur(20px);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 20px;
-            flex-direction: column;
-            gap: 16px;
-            z-index: 99
-        }
-
-        .mobile-menu.open {
-            display: flex
-        }
-
-        .mobile-menu button {
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: left;
-            font-family: var(--font-body);
-            padding: 8px 0
-        }
-
-        .mobile-menu button:hover {
-            color: var(--fg)
-        }
-
-        /* RESPONSIVE */
-        @media(max-width:900px) {
-            nav .links {
-                display: none
-            }
-
-            .hamburger {
-                display: block
-            }
-
-            .screens-grid {
-                grid-template-columns: 1fr
-            }
-
-            .feature-row,
-            .feature-row.reverse {
-                flex-direction: column
-            }
-
-            .feature-row .text-side h2 {
-                text-align: center
-            }
-        }
-
-        @media(max-width:600px) {
-            section {
-                padding: 60px 0
-            }
-
-            #hero h1 {
-                font-size: 1.8rem
-            }
-
-            .glow-btn,
-            .btn-outline {
-                padding: 12px 24px;
-                font-size: .9rem
-            }
-        }
-
-        .testimonials {
-  padding: 80px 20px;
-  background: #0f172a;
-  color: white;
-  text-align: center;
-}
-
-.testimonials h2 {
-  font-size: 32px;
-  margin-bottom: 40px;
-}
-
-.testimonial-container {
-  display: flex;
-  gap: 20px;
-  overflow: hidden;
-  position: relative;
-}
-
-.testimonial {
-  min-width: 300px;
-  background: #1e293b;
-  padding: 25px;
-  border-radius: 12px;
-  transition: transform 0.4s;
-}
-
-.testimonial:hover {
-  transform: translateY(-10px);
-}
-
-.avatar {
-  width: 50px;
-  height: 50px;
-  background: #22c55e;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin: 0 auto 10px;
-}
-
-.testimonial span {
-  color: #22c55e;
-  font-size: 14px;
-}
-
-.testimonial p {
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* BOTÕES FUTURISTAS */
-
-.btn-animado{
-position:relative;
-overflow:hidden;
-transition:all .3s ease;
-}
-
-/* seta aparecendo */
-.btn-animado::after{
-content:"→";
-position:absolute;
-right:-25px;
-top:50%;
-transform:translateY(-50%);
-opacity:0;
-font-size:18px;
-transition:all .3s ease;
-}
-
-.btn-animado:hover::after{
-right:15px;
-opacity:1;
-}
-
-/* leve movimento */
-.btn-animado:hover{
-transform:translateY(-3px) scale(1.03);
-}
-
-/* brilho passando */
-.btn-animado::before{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(
-120deg,
-transparent,
-rgba(255,255,255,0.35),
-transparent
-);
-transition:0.6s;
-}
-
-.btn-animado:hover::before{
-left:100%;
-}
-
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoreXFit AI - Inteligência Artificial Fitness</title>
+  <meta name="description"
+    content="CoreXFit AI calcula automaticamente sua dieta, treino e evolução com inteligência artificial.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ===================== RESET + BASE ===================== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #080b14;
+      --card: #0d1120;
+      --border: #1a1f35;
+      --fg: #f0f0f5;
+      --muted: #6b7194;
+      --primary: #2d7aff;
+      --primary-glow: 0 0 20px rgba(45, 122, 255, .4), 0 0 60px rgba(45, 122, 255, .1);
+      --primary-glow-strong: 0 0 20px rgba(45, 122, 255, .6), 0 0 80px rgba(45, 122, 255, .2);
+      --gradient: linear-gradient(135deg, #2d7aff, #6c5ce7);
+      --font-body: 'Inter', sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    ul {
+      list-style: none
+    }
+
+    img {
+      max-width: 100%;
+      display: block
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    .text-gradient {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .glow-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--primary-glow);
+      transition: all .3s
+    }
+
+    .glow-btn:hover {
+      box-shadow: var(--primary-glow-strong);
+      filter: brightness(1.1)
+    }
+
+    .glow-btn-large {
+      font-size: 1.1rem;
+      padding: 18px 40px
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      background: transparent;
+      transition: all .3s
+    }
+
+    .btn-outline:hover {
+      background: var(--card)
+    }
+
+    .card-glass {
+      background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px)
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0
+    }
+
+    .dot-ring {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(45, 122, 255, .15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .dot-ring .dot {
+      width: 8px;
+      height: 8px
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    /* ===================== TRAIL ===================== */
+    #trail {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999
+    }
+
+    /* ===================== MUSIC ===================== */
+    .music-player {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.6);
+      transition: 0.3s;
+      z-index: 999
+    }
+
+    .music-player:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 35px rgba(37, 99, 235, 0.8)
+    }
+
+    .music-icon {
+      pointer-events: none
+    }
+
+    /* ===================== NAV ===================== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(8, 11, 20, .85);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border)
+    }
+
+    nav .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    nav .logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      position: relative;
+      cursor: default;
+      user-select: none;
+    }
+
+    /* cada letra individualmente */
+    .logo-letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(-14px) skewX(-8deg);
+      animation: letterDrop 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    @keyframes letterDrop {
+      0% {
+        opacity: 0;
+        transform: translateY(-18px) skewX(-12deg) scaleY(1.3);
+        filter: blur(6px);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateY(3px) skewX(2deg) scaleY(0.95);
+        filter: blur(0);
+      }
+
+      80% {
+        transform: translateY(-2px) skewX(-1deg) scaleY(1.02);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) skewX(0) scaleY(1);
+        filter: blur(0);
+      }
+    }
+
+    /* brilho que varre após todas as letras caírem */
+    .logo-shimmer {
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+      opacity: 0;
+      border-radius: 2px;
+      animation: shimmerPass 0.55s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes shimmerPass {
+      0% {
+        left: -60%;
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      100% {
+        left: 110%;
+        opacity: 0;
+      }
+    }
+
+    nav .links {
+      display: flex;
+      gap: 32px;
+      font-size: .9rem;
+      color: var(--muted)
+    }
+
+    nav .links button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .9rem;
+      font-family: var(--font-body);
+      transition: color .2s
+    }
+
+    nav .links button:hover {
+      color: var(--fg)
+    }
+
+    /* ── NAV CTA — BOTÃO ACESSAR APLICATIVO ── */
+    nav .cta {
+      padding: 10px 22px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: .85rem;
+      box-shadow: var(--primary-glow);
+      transition: all .3s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.02em;
+    }
+
+    /* brilho que varre */
+    nav .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, .35) 50%, transparent 80%);
+      transition: left .55s ease;
+    }
+
+    nav .cta:hover::before {
+      left: 110%;
+    }
+
+    /* pulso de fundo */
+    nav .cta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: var(--primary);
+      animation: ctaPulse 2.4s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes ctaPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(45, 122, 255, .55);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(45, 122, 255, 0);
+      }
+    }
+
+    nav .cta:hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: var(--primary-glow-strong);
+    }
+
+    nav .cta:active {
+      transform: scale(.97);
+    }
+
+    /* ── NAV LINKS — sublinhado gradiente do centro ── */
+    nav .links button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .9rem;
+      font-family: var(--font-body);
+      transition: color .25s;
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    nav .links button::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      width: 0;
+      height: 1.5px;
+      background: var(--gradient);
+      border-radius: 2px;
+      transform: translateX(-50%);
+      transition: width .3s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    nav .links button:hover {
+      color: var(--fg);
+    }
+
+    nav .links button:hover::after {
+      width: 100%;
+    }
+
+    /* ── HAMBURGER — animação X ── */
+    .hamburger {
+      display: none;
+      background: none;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 8px;
+      color: var(--fg);
+      cursor: pointer;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      transition: border-color .2s, background .2s;
+    }
+
+    .hamburger:hover {
+      border-color: rgba(45, 122, 255, .4);
+      background: rgba(45, 122, 255, .07);
+    }
+
+    .hamburger .hb-line {
+      width: 18px;
+      height: 1.5px;
+      background: var(--fg);
+      border-radius: 2px;
+      transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .25s, width .3s;
+      transform-origin: center;
+    }
+
+    .hamburger.open .hb-line:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
+    }
+
+    .hamburger.open .hb-line:nth-child(2) {
+      opacity: 0;
+      width: 0;
+    }
+
+    .hamburger.open .hb-line:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+
+    /* ── MOBILE MENU — slide + stagger ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(6, 8, 18, .97);
+      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(45, 122, 255, .12);
+      padding: 12px 0 20px;
+      flex-direction: column;
+      z-index: 99;
+      overflow: hidden;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: .95rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font-body);
+      padding: 13px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      transition: color .2s, background .2s;
+      /* entrada stagger via JS */
+      opacity: 0;
+      transform: translateX(-18px);
+    }
+
+    .mobile-menu button.mm-in {
+      animation: mmSlideIn .38s cubic-bezier(.22, 1, .36, 1) forwards;
+    }
+
+    @keyframes mmSlideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .mobile-menu button:hover {
+      color: var(--fg);
+      background: rgba(45, 122, 255, .06);
+    }
+
+    .mobile-menu button:active {
+      background: rgba(45, 122, 255, .12);
+    }
+
+    /* ícone de cada item */
+    .mm-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* linha separadora animada */
+    .mm-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .07) 40%, transparent);
+      margin: 4px 24px;
+    }
+
+    /* seta direita */
+    .mm-arrow {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: .5;
+      transition: transform .2s, opacity .2s;
+    }
+
+    .mobile-menu button:hover .mm-arrow {
+      transform: translateX(4px);
+      opacity: 1;
+      color: var(--primary);
+    }
+
+    /* ===================== HERO ===================== */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden
+    }
+
+    #hero video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    #hero .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 11, 20, .78)
+    }
+
+    #hero .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 720px;
+      padding: 0 20px
+    }
+
+    #hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 24px
+    }
+
+    #hero p {
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    #hero .btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    /* ===================== SECTIONS ===================== */
+    section {
+      padding: 100px 0
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 48px
+    }
+
+    /* ABOUT */
+    #sobre .about-card {
+      padding: 40px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto
+    }
+
+    #sobre .about-card p {
+      margin-bottom: 16px
+    }
+
+    #sobre .about-card .feature-list {
+      margin-top: 16px
+    }
+
+    #sobre .about-card .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--fg);
+      margin-bottom: 10px
+    }
+
+    /* FEATURE ROW */
+    .feature-row {
+      display: flex;
+      gap: 48px;
+      align-items: center;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    .feature-row.reverse {
+      flex-direction: row-reverse
+    }
+
+    .feature-row .img-side {
+      flex: 1
+    }
+
+    .feature-row .img-side .card-glass {
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 420px;
+      margin: 0 auto
+    }
+
+    .feature-row .text-side {
+      flex: 1
+    }
+
+    .feature-row .text-side h2 {
+      text-align: left;
+      margin-bottom: 24px
+    }
+
+    .feature-row .text-side p {
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.7
+    }
+
+    .feature-row .text-side ul {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .feature-row .text-side ul li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .95rem
+    }
+
+    /* CTA */
+    #cta {
+      position: relative;
+      text-align: center
+    }
+
+    #cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(45, 122, 255, .06) 0%, transparent 70%)
+    }
+
+    #cta .content {
+      position: relative;
+      z-index: 2
+    }
+
+    #cta p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      margin-bottom: 40px
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem
+    }
+
+    /* TESTIMONIALS */
+    /* ── TESTIMONIALS MODERNOS ── */
+    .testimonials {
+      padding: 100px 0;
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(45, 122, 255, .25), transparent);
+    }
+
+    .testimonials::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(45, 122, 255, .15), transparent);
+    }
+
+    .test-header {
+      text-align: center;
+      margin-bottom: 56px;
+      padding: 0 20px;
+    }
+
+    .test-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .test-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .test-track-wrap {
+      position: relative;
+    }
+
+    /* fade nas bordas */
+    .test-track-wrap::before,
+    .test-track-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .test-track-wrap::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg), transparent);
+    }
+
+    .test-track-wrap::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg), transparent);
+    }
+
+    .test-track {
+      display: flex;
+      gap: 20px;
+      padding: 12px 40px 28px;
+      overflow: visible;
+      width: max-content;
+      animation: testScroll 40s linear infinite;
+    }
+
+    .test-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes testScroll {
+      0% {
+        transform: translateX(0)
+      }
+
+      100% {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* card */
+    .tcard {
+      width: 320px;
+      flex-shrink: 0;
+      background: linear-gradient(145deg, rgba(15, 20, 38, .95), rgba(9, 13, 26, .95));
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      transition: border-color .3s, transform .3s;
+    }
+
+    .tcard:hover {
+      border-color: rgba(45, 122, 255, .3);
+      transform: translateY(-6px);
+    }
+
+    /* aspas decorativas */
+    .tcard-quote {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 3.5rem;
+      line-height: 1;
+      font-family: Georgia, serif;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: .25;
+      pointer-events: none;
+    }
+
+    /* estrelas */
+    .tcard-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 14px;
+    }
+
+    .tcard-stars span {
+      font-size: 13px;
+    }
+
+    /* texto */
+    .tcard-text {
+      font-size: .88rem;
+      color: rgba(200, 204, 220, .85);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* separador */
+    .tcard-sep {
+      height: 1px;
+      background: rgba(255, 255, 255, .06);
+      margin-bottom: 16px;
+    }
+
+    /* autor */
+    .tcard-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tcard-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .tcard-info {}
+
+    .tcard-name {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 2px;
+    }
+
+    .tcard-role {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .tcard-badge {
+      display: inline-block;
+      margin-top: 4px;
+      font-size: .65rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: .06em;
+    }
+
+    .tcard-badge-green {
+      background: rgba(52, 211, 153, .12);
+      border: 1px solid rgba(52, 211, 153, .22);
+      color: #34d399;
+    }
+
+    .tcard-badge-blue {
+      background: rgba(45, 122, 255, .12);
+      border: 1px solid rgba(45, 122, 255, .22);
+      color: #7c8fff;
+    }
+
+    .tcard-badge-amber {
+      background: rgba(251, 191, 36, .12);
+      border: 1px solid rgba(251, 191, 36, .22);
+      color: #fbbf24;
+    }
+
+    /* BTN ANIMADO */
+    .btn-animado {
+      position: relative;
+      overflow: hidden;
+      transition: all .3s ease
+    }
+
+    .btn-animado::after {
+      content: "→";
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      font-size: 18px;
+      transition: all .3s ease
+    }
+
+    .btn-animado:hover::after {
+      right: 15px;
+      opacity: 1
+    }
+
+    .btn-animado:hover {
+      transform: translateY(-3px) scale(1.03)
+    }
+
+    .btn-animado::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transition: 0.6s
+    }
+
+    .btn-animado:hover::before {
+      left: 100%
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      nav .links {
+        display: none
+      }
+
+      .hamburger {
+        display: flex
+      }
+
+      .feature-row,
+      .feature-row.reverse {
+        flex-direction: column
+      }
+
+      .feature-row .text-side h2 {
+        text-align: center
+      }
+    }
+
+    @media(max-width:600px) {
+      section {
+        padding: 60px 0
+      }
+
+      #hero h1 {
+        font-size: 1.8rem
+      }
+
+      .glow-btn,
+      .btn-outline {
+        padding: 12px 24px;
+        font-size: .9rem
+      }
+    }
+
+    /* ========================================================
+   SEÇÃO INTER-STYLE — CELULAR FLUTUANTE COM LOGO
+   ======================================================== */
+
+    #phone-showcase {
+      position: relative;
+      height: 300vh;
+      background: #06070f;
+    }
+
+    #phone-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 40px;
+      gap: 40px;
+    }
+
+    /* fundo — brilho central suave */
+    #ps-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 70% at 60% 50%, rgba(45, 122, 255, 0.08) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---- TEXTO ESQUERDA ---- */
+    #ps-top-text {
+      position: relative;
+      z-index: 10;
+    }
+
+    #ps-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--primary);
+      opacity: 0.75;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    #ps-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+    }
+
+    #ps-headline span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ---- TAGLINE INFERIOR (sub-texto) ---- */
+    #ps-tagline {
+      margin-top: 0;
+    }
+
+    #ps-tagline-line1 {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 400;
+    }
+
+    #ps-tagline-line2 {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    #ps-cta-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: var(--primary-glow);
+      transition: all .3s;
+      text-decoration: none;
+    }
+
+    #ps-cta-btn:hover {
+      box-shadow: var(--primary-glow-strong);
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    /* ---- PHONE WRAPPER — controlado 100% pelo scroll JS ---- */
+    #ps-phone-wrap {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(120px) scale(0.88);
+      will-change: transform, opacity;
+    }
+
+    /* float suave estilo Inter — aplicado via classe quando estável */
+    #ps-phone-wrap.inter-float {
+      animation: interFloat 5s ease-in-out infinite;
+    }
+
+    @keyframes interFloat {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      30% {
+        transform: translateY(-18px) rotate(0.7deg);
+      }
+
+      70% {
+        transform: translateY(-9px) rotate(-0.4deg);
+      }
+    }
+
+    /* ---- VÍDEO DO CELULAR ---- */
+    #ps-video {
+      display: block;
+      width: clamp(260px, 28vw, 360px);
+      height: auto;
+      border-radius: 36px;
+      filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 50px rgba(45, 122, 255, 0.13));
+    }
+
+    /* ---- RESPONSIVO ---- */
+    @media(max-width:900px) {
+      #phone-sticky {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        text-align: center;
+        padding: 80px 24px 40px;
+        gap: 40px;
+      }
+
+      #ps-headline {
+        font-size: 2rem;
+      }
+
+      #ps-phone {
+        width: 230px;
+        height: 480px;
+      }
+
+      #ps-phone::before,
+      #ps-phone::after {
+        display: none
+      }
+
+      #ps-cta-btn {
+        margin: 0 auto;
+      }
+    }
+
+    @media(max-width:480px) {
+      #ps-phone {
+        width: 195px;
+        height: 410px;
+      }
+
+      #ps-screen-logo img {
+        width: 140px;
+      }
+
+      #ps-headline {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* ---- SLIDES ---- */
+    .ps-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateY(18px) scale(0.97);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .ps-slide.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* =====================
+   SLIDE INTERNO — UI MOCKADA
+   ===================== */
+
+    /* STATUS BAR */
+    .s-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px 6px;
+      font-size: 10px;
+      color: #5a607a;
+      font-weight: 500;
+    }
+
+    .s-statusbar-right {
+      display: flex;
+      gap: 5px;
+      align-items: center
+    }
+
+    .s-sbdot {
+      width: 14px;
+      height: 7px;
+      border-radius: 3px;
+      background: #3a4060;
+      border: 1px solid #4a5070
+    }
+
+    .s-sbwifi,
+    .s-sbsig {
+      width: 12px;
+      height: 9px;
+      border-radius: 1px;
+      background: #3a4060
+    }
+
+    /* ---- SLIDE 1: HOME / PAINEL ---- */
+    #pss-home {
+      background: linear-gradient(160deg, #080d20 0%, #060a16 100%);
+    }
+
+    .s-greeting {
+      padding: 0 18px 4px;
+      font-size: 10px;
+      color: #4a5278;
+    }
+
+    .s-username {
+      padding: 0 18px 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #f0f0f5;
+      font-family: var(--font-display);
+    }
+
+    /* anel calórico */
+    .s-ring-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin: 0 0 12px;
+    }
+
+    .s-ring-wrap svg {
+      width: 130px;
+      height: 130px;
+    }
+
+    .s-ring-center {
+      position: absolute;
+      text-align: center;
+    }
+
+    .s-ring-kcal {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f0f0f5;
+      font-family: var(--font-display);
+    }
+
+    .s-ring-label {
+      font-size: 9px;
+      color: #4a5278;
+      margin-top: 2px;
+    }
+
+    /* macros inline */
+    .s-macros {
+      display: flex;
+      justify-content: space-around;
+      margin: 0 14px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      padding: 9px 0;
+    }
+
+    .s-macro {
+      text-align: center;
+    }
+
+    .s-macro-val {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .s-macro-label {
+      font-size: 8px;
+      color: #4a5278;
+      margin-top: 2px;
+    }
+
+    /* mini cards */
+    .s-card {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 9px 12px;
+      margin: 0 14px 7px;
+    }
+
+    .s-card-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .s-card-body {
+      flex: 1;
+    }
+
+    .s-card-title {
+      font-size: 9px;
+      color: #4a5278;
+    }
+
+    .s-card-val {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f0f0f5;
+      margin-top: 1px;
+    }
+
+    .s-card-right {
+      font-size: 10px;
+      color: #4a5278;
+    }
+
+    /* ---- SLIDE 2: DIETA ---- */
+    #pss-diet {
+      background: linear-gradient(160deg, #06130f 0%, #040e0b 100%);
+    }
+
+    .s-section-head {
+      padding: 0 18px 8px;
+    }
+
+    .s-stitle {
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font-display);
+    }
+
+    .s-ssub {
+      font-size: 9px;
+      color: #3d6e5a;
+      margin-top: 2px;
+    }
+
+    .s-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 9px;
+      color: #4ade80;
+      margin: 0 18px 10px;
+    }
+
+    .s-meal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin: 0 14px 5px;
+    }
+
+    .s-meal-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .s-meal-name {
+      flex: 1;
+      font-size: 10px;
+    }
+
+    .s-meal-kcal {
+      font-size: 10px;
+      color: #3d6e5a;
+    }
+
+    .s-bar-block {
+      margin: 8px 14px 0;
+    }
+
+    .s-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+      color: #3d6e5a;
+      margin-bottom: 3px;
+    }
+
+    .s-bar-track {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .s-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* ---- SLIDE 3: TREINO ---- */
+    #pss-workout {
+      background: linear-gradient(160deg, #130b03 0%, #0d0702 100%);
+    }
+
+    .s-w-stats {
+      display: flex;
+      gap: 6px;
+      margin: 0 14px 10px;
+    }
+
+    .s-w-stat {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 8px 5px;
+      text-align: center;
+    }
+
+    .s-w-stat-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fbbf24;
+      font-family: var(--font-display);
+    }
+
+    .s-w-stat-label {
+      font-size: 8px;
+      color: #6b4d12;
+      margin-top: 2px;
+    }
+
+    .s-ex {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 8px 11px;
+      margin: 0 14px 5px;
+    }
+
+    .s-ex-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: #fbbf24;
+      width: 14px;
+      flex-shrink: 0;
+    }
+
+    .s-ex-body {
+      flex: 1;
+    }
+
+    .s-ex-name {
+      font-size: 10px;
+      color: #fff8f0;
+      font-weight: 500;
+    }
+
+    .s-ex-sets {
+      font-size: 8px;
+      color: #6b4d12;
+      margin-top: 2px;
+    }
+
+    .s-ex-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      flex-shrink: 0;
+    }
+
+    /* ---- SLIDE 4: IA VISION CAMERA ---- */
+    #pss-camera {
+      background: #04040a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .s-cam-view {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #08081a 0%, #0c0c20 100%);
+      overflow: hidden;
+    }
+
+    .s-cam-topbar {
+      position: absolute;
+      top: 34px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .s-cam-badge {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+      background: rgba(45, 122, 255, 0.1);
+      border: 1px solid rgba(45, 122, 255, 0.2);
+      border-radius: 20px;
+      padding: 3px 9px;
+    }
+
+    .s-cam-mode {
+      font-size: 8px;
+      color: #30304a;
+    }
+
+    .s-food-box {
+      width: 130px;
+      height: 105px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #161008, #0e0c04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      position: relative;
+    }
+
+    .s-corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: var(--primary);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .s-corner.tl {
+      top: -2px;
+      left: -2px;
+      border-top-width: 2px;
+      border-left-width: 2px;
+      border-top-left-radius: 5px
+    }
+
+    .s-corner.tr {
+      top: -2px;
+      right: -2px;
+      border-top-width: 2px;
+      border-right-width: 2px;
+      border-top-right-radius: 5px
+    }
+
+    .s-corner.bl {
+      bottom: -2px;
+      left: -2px;
+      border-bottom-width: 2px;
+      border-left-width: 2px;
+      border-bottom-left-radius: 5px
+    }
+
+    .s-corner.br {
+      bottom: -2px;
+      right: -2px;
+      border-bottom-width: 2px;
+      border-right-width: 2px;
+      border-bottom-right-radius: 5px
+    }
+
+    .s-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      animation: scanMove 2s ease-in-out infinite;
+      top: 10%;
+    }
+
+    @keyframes scanMove {
+      0% {
+        top: 10%;
+        opacity: 0
+      }
+
+      15% {
+        opacity: 1
+      }
+
+      85% {
+        opacity: 1
+      }
+
+      100% {
+        top: 90%;
+        opacity: 0
+      }
+    }
+
+    .s-cam-result {
+      background: linear-gradient(160deg, #0a0c1e, #07091a);
+      border-top: 1px solid rgba(45, 122, 255, 0.12);
+      padding: 12px 15px;
+      flex-shrink: 0;
+    }
+
+    .s-cam-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+
+    .s-cam-food {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f0f0f5;
+      font-family: var(--font-display);
+    }
+
+    .s-cam-conf {
+      font-size: 8px;
+      color: #4a5278;
+      margin-top: 2px;
+    }
+
+    .s-cam-add {
+      font-size: 9px;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-weight: 600;
+    }
+
+    .s-cam-macros {
+      display: flex;
+      gap: 10px;
+    }
+
+    .s-cam-macro {
+      text-align: center;
+      flex: 1;
+    }
+
+    .s-cam-macro-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f0f0f5;
+      font-family: var(--font-display);
+    }
+
+    .s-cam-macro-label {
+      font-size: 8px;
+      color: #4a5278;
+      margin-top: 1px;
+    }
+
+
+    /* ---- RESPONSIVO ---- */
+    @media(max-width:900px) {
+      #phone-sticky {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        justify-items: center;
+        text-align: center;
+        padding: 80px 24px 40px;
+        gap: 32px;
+      }
+
+      #ps-headline {
+        font-size: 2rem;
+      }
+
+      #ps-video {
+        width: clamp(200px, 60vw, 280px);
+      }
+    }
+
+    @media(max-width:480px) {
+      #ps-video {
+        width: clamp(170px, 70vw, 230px);
+      }
+
+      #ps-headline {
+        font-size: 1.6rem;
+      }
+    }
+
+    /* ============================================================
+   CURSOR CUSTOMIZADO — HALTERE
+   ============================================================ */
+    *:not(.ba-divider):not(.calc-btn):not(a):not(button):not(input):not(select) {
+      cursor: none !important;
+    }
+
+    a,
+    button,
+    input,
+    select,
+    .ba-divider {
+      cursor: none !important;
+    }
+
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 34px;
+      height: 34px;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity .2s;
+      will-change: transform;
+    }
+
+    #custom-cursor svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 6px rgba(45, 122, 255, .85));
+    }
+
+    #custom-cursor.cur-click {
+      animation: curClick .18s ease;
+    }
+
+    @keyframes curClick {
+      0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(.75) rotate(18deg);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+    }
+
+    /* ============================================================
+   CONTADORES AO VIVO
+   ============================================================ */
+    #counters {
+      padding: 80px 0;
+      background: linear-gradient(180deg, var(--bg) 0%, #0a0f1e 100%);
+    }
+
+    .counter-eyebrow {
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--primary);
+      opacity: .7;
+      margin-bottom: 40px;
+    }
+
+    .counter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .counter-card {
+      background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+
+    .counter-card:hover {
+      border-color: rgba(45, 122, 255, .35);
+      transform: translateY(-4px);
+    }
+
+    .counter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient);
+      opacity: .6;
+    }
+
+    .counter-num {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: -.02em;
+    }
+
+    .counter-label {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .counter-bar {
+      height: 3px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .counter-bar-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 1.4s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    @media(max-width:900px) {
+      .counter-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:480px) {
+      .counter-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ============================================================
+   SLIDER ANTES / DEPOIS
+   ============================================================ */
+    #before-after {
+      padding: 100px 0;
+      background: var(--bg);
+    }
+
+    .ba-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: -28px;
+      margin-bottom: 48px;
+    }
+
+    .ba-wrap {
+      position: relative;
+      max-width: 780px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      height: 460px;
+      user-select: none;
+    }
+
+    .ba-side {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ba-before {
+      background: linear-gradient(135deg, #120a0a, #1a0f10);
+      flex: 1;
+    }
+
+    .ba-after {
+      background: linear-gradient(135deg, #0a1210, #0d1a14);
+      flex: 1;
+    }
+
+    .ba-label {
+      position: absolute;
+      top: 16px;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    .ba-label-left {
+      left: 16px;
+      background: rgba(248, 113, 113, .15);
+      border: 1px solid rgba(248, 113, 113, .3);
+      color: #f87171;
+    }
+
+    .ba-label-right {
+      right: 16px;
+      background: rgba(52, 211, 153, .15);
+      border: 1px solid rgba(52, 211, 153, .3);
+      color: #34d399;
+    }
+
+    .ba-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      padding: 48px 20px 24px;
+      gap: 12px;
+    }
+
+    .ba-stats {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .ba-stat {
+      text-align: center;
+    }
+
+    .ba-stat-val {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .ba-stat-key {
+      display: block;
+      font-size: .68rem;
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .ba-body-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ba-body-svg {
+      width: 100px;
+      height: auto;
+      opacity: .9;
+    }
+
+    .ba-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .ba-tag {
+      font-size: .68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: .05em;
+    }
+
+    .ba-tag-bad {
+      background: rgba(248, 113, 113, .1);
+      border: 1px solid rgba(248, 113, 113, .2);
+      color: #f87171;
+    }
+
+    .ba-tag-good {
+      background: rgba(52, 211, 153, .1);
+      border: 1px solid rgba(52, 211, 153, .2);
+      color: #34d399;
+    }
+
+    .ba-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      cursor: ew-resize !important;
+    }
+
+    .ba-divider-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: rgba(255, 255, 255, .25);
+      transform: translateX(-50%);
+    }
+
+    .ba-divider-handle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: var(--primary-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s, box-shadow .2s;
+      z-index: 1;
+    }
+
+    .ba-divider:hover .ba-divider-handle,
+    .ba-dragging .ba-divider-handle {
+      transform: scale(1.18);
+      box-shadow: var(--primary-glow-strong);
+    }
+
+    @media(max-width:600px) {
+      .ba-wrap {
+        height: 360px
+      }
+
+      .ba-body-svg {
+        width: 75px
+      }
+
+      .ba-stat-val {
+        font-size: 1rem
+      }
+    }
+
+    /* ============================================================
+   CALCULADORA DE MACROS
+   ============================================================ */
+    #calculadora {
+      padding: 100px 0;
+      background: linear-gradient(180deg, #0a0f1e 0%, var(--bg) 100%);
+    }
+
+    .calc-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: -28px;
+      margin-bottom: 48px;
+    }
+
+    .calc-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .calc-form {
+      background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+    }
+
+    .calc-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .calc-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .calc-field label {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .calc-field input,
+    .calc-field select {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--fg);
+      font-size: .9rem;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+
+    .calc-field input:focus,
+    .calc-field select:focus {
+      border-color: var(--primary);
+    }
+
+    .calc-field input::placeholder {
+      color: #3a4060;
+    }
+
+    .calc-field select option {
+      background: #0d1120;
+      color: var(--fg);
+    }
+
+    .calc-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer !important;
+      box-shadow: var(--primary-glow);
+      transition: all .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .calc-btn:hover {
+      filter: brightness(1.12);
+      box-shadow: var(--primary-glow-strong);
+      transform: translateY(-2px);
+    }
+
+    .calc-result {
+      background: linear-gradient(145deg, rgba(13, 17, 32, .9), rgba(8, 11, 20, .9));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .calc-result-placeholder {
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .calc-placeholder-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: .4;
+    }
+
+    .calc-result-placeholder p {
+      font-size: .9rem;
+      line-height: 1.6;
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    .calc-output {
+      width: 100%;
+    }
+
+    .calc-output-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--fg);
+    }
+
+    .calc-output-goal {
+      font-size: .72rem;
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .calc-kcal-block {
+      text-align: center;
+      padding: 18px;
+      background: rgba(45, 122, 255, .07);
+      border: 1px solid rgba(45, 122, 255, .15);
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    .calc-kcal-num {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .calc-kcal-label {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .calc-macro-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .calc-macro-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .calc-macro-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+    }
+
+    .calc-macro-name {
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .calc-macro-val {
+      color: var(--muted);
+    }
+
+    .calc-macro-track {
+      height: 6px;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .calc-macro-fill {
+      height: 100%;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 1s cubic-bezier(.22, 1, .36, 1) .1s;
+    }
+
+    .calc-cta-hint {
+      margin-top: 18px;
+      text-align: center;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .calc-cta-hint a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @media(max-width:900px) {
+      .calc-wrap {
+        grid-template-columns: 1fr
+      }
+
+      .calc-result {
+        min-height: 240px
+      }
+    }
+
+    @media(max-width:480px) {
+      .calc-row {
+        flex-direction: column;
+        gap: 10px
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<canvas id="trail"></canvas>
-
-   <nav>
-    <div class="inner">
-        <span class="logo text-gradient">CoreXFit AI</span>
-
-        <div class="links">
-            <button onclick="scrollSection('hero')">Casa</button>
-            <button onclick="scrollSection('dieta')">Dieta por IA</button>
-            <button onclick="scrollSection('treino')">Treino por IA</button>
-            <button onclick="scrollSection('diferencial')">Nosso Diferencial</button>
-        </div>
-
-        <button class="hamburger" onclick="toggleMenu()">☰</button>
-
-        <a href="https://cocky-corex-fit.base44.app"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="cta">
-           Acessar Aplicativo
-        </a>
-    </div>
-</nav>
-
-<div class="mobile-menu" id="mobileMenu">
-    <button onclick="scrollSection('hero');toggleMenu()">Casa</button>
-    <button onclick="scrollSection('dieta');toggleMenu()">Dieta por IA</button>
-    <button onclick="scrollSection('treino');toggleMenu()">Treino por IA</button>
-    <button onclick="scrollSection('diferencial');toggleMenu()">Nosso Diferencial</button>
-</div>
-
-
-    <!-- HERO -->
-    <section id="hero">
-        <video autoplay loop muted playsinline>
-            <source src="video.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-        <div class="content fade-up">
-            <h1>Inteligência artificial aplicada ao <span class="text-gradient">seu corpo</span></h1>
-            <p>O CoreXFit AI calcula automaticamente sua dieta, treino e evolução de acordo com suas metas, restrições e
-                objetivos.</p>
-            <div class="btns">
-                <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
-                    class="glow-btn btn-animado">Começar Agora</a>
-                <button class="btn-outline btn-animado" onclick="scrollTo('sobre')">Ver Como Funciona</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- SOBRE -->
-    <section id="sobre">
-        <div class="container">
-            <h2 class="fade-up">O que é o <span class="text-gradient">CoreXFit AI</span>?</h2>
-            <div class="card-glass about-card fade-up">
-                <p>O CoreXFit AI é um aplicativo de personal trainer com inteligência artificial que cria dietas e
-                    planos de treino personalizados de acordo com seus objetivos, limitações e rotina.</p>
-                <p>O aplicativo calcula automaticamente calorias, proteínas, carboidratos e gorduras ideais para seu
-                    corpo e ajusta tudo automaticamente conforme sua evolução.</p>
-                <p>Com tecnologia de IA, o CoreXFit AI analisa seus dados e cria estratégias personalizadas para:</p>
-                <ul class="feature-list">
-                    <li><span class="dot"></span> Ganho de massa muscular</li>
-                    <li><span class="dot"></span> Perda de gordura</li>
-                    <li><span class="dot"></span> Manutenção de peso</li>
-                    <li><span class="dot"></span> Melhora da saúde geral</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- TELAS -->
-    <section id="telas">
-        <div class="container">
-            <h2 class="fade-up">Telas do <span class="text-gradient">Aplicativo</span></h2>
-            <div class="screens-grid">
-                <div class="card-glass screen-card fade-up">
-                    <div class="img-wrap"><img src="imagem_pagina.jpeg" alt="Página Inicial"></div>
-                    <div class="info">
-                        <h3>Página Inicial</h3>
-                        <p>Painel inteligente com acompanhamento de calorias, hidratação, metas diárias e evolução do
-                            usuário.</p>
-                    </div>
-                </div>
-                <div class="card-glass screen-card fade-up">
-                    <div class="img-wrap"><img src="imagem_progresso_macro.jpeg" alt="Dieta por IA"></div>
-                    <div class="info">
-                        <h3>Dieta por IA</h3>
-                        <p>O sistema calcula automaticamente sua dieta com base em seu objetivo: Ganhar massa, Perder
-                            peso, Manter peso, Melhorar saúde.</p>
-                    </div>
-                </div>
-                <div class="card-glass screen-card fade-up">
-                    <div class="img-wrap"><img src="imagem_treino.jpeg" alt="Treino por IA"></div>
-                    <div class="info">
-                        <h3>Treino por IA</h3>
-                        <p>Treinos personalizados criados por inteligência artificial de acordo com seu objetivo.</p>
-                    </div>
-                </div>
-            </div>
-            <div style="text-align:center" class="fade-up">
-                <button class="btn-outline btn-animado"onclick="scrollTo('dieta')"
-                    style="border-color:var(--primary);color:var(--primary)">Ver mais sobre o aplicativo</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- DIETA -->
-    <section id="dieta">
-        <div class="feature-row fade-up">
-            <div class="img-side">
-                <div class="card-glass"><img src="imagem_progresso_macro.jpeg" alt="Dieta Inteligente"></div>
-            </div>
-            <div class="text-side">
-                <h2><span class="text-gradient">Dieta Inteligente com IA</span></h2>
-                <p>O CoreXFit AI cria automaticamente sua dieta ideal. Ele calcula calorias, proteínas, carboidratos e
-                    gorduras — tudo ajustado automaticamente conforme seu objetivo.</p>
-                <ul>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para bulking</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para cutting</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Dieta para manutenção</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Ajuste automático de macros</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- TREINO -->
-    <section id="treino">
-        <div class="feature-row reverse fade-up">
-            <div class="img-side">
-                <div class="card-glass"><img src="imagem_treino.jpeg" alt="Treino com IA"></div>
-            </div>
-            <div class="text-side">
-                <h2><span class="text-gradient">Plano de Treino com IA</span></h2>
-                <p>O CoreXFit AI cria automaticamente seu plano de treino personalizado.</p>
-                <ul>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Treinos personalizados</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Ajustados ao seu objetivo</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Organização semanal</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Treinos de segunda a sexta</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Dia de descanso automático incluído</li>
-                    <li><span class="dot-ring"><span class="dot"></span></span> Evolução progressiva dos exercícios</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- DIFERENCIAL -->
-    <section id="diferencial">
-        <div class="container">
-            <h2 class="fade-up">Nosso <span class="text-gradient">Diferencial</span></h2>
-            <div class="feature-row fade-up">
-                <div class="img-side">
-                    <div class="card-glass"><img src="imagem_camera.jpeg" alt="IA Vision Camera"></div>
-                </div>
-                <div class="text-side">
-                    <p style="font-size:1.2rem;font-weight:600;color:var(--fg);margin-bottom:16px">Com o CoreXFit AI,
-                        você pode simplesmente tirar uma foto do alimento.</p>
-                    <p>A inteligência artificial identifica o alimento automaticamente e calcula:</p>
-                    <ul>
-                        <li><span class="dot-ring"><span class="dot"></span></span> Calorias</li>
-                        <li><span class="dot-ring"><span class="dot"></span></span> Proteínas</li>
-                        <li><span class="dot-ring"><span class="dot"></span></span> Carboidratos</li>
-                        <li><span class="dot-ring"><span class="dot"></span></span> Gorduras</li>
-                    </ul>
-                    <p style="margin-top:20px">E adiciona automaticamente na sua meta diária.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-<section class="testimonials">
-  <h2>Resultados de Quem Usa o CoreXFit AI</h2>
-
-  <div class="testimonial-container" id="testimonialContainer">
-
-    <div class="testimonial">
-      <div class="avatar">LF</div>
-      <h3>Lucas Ferreira</h3>
-      <span>Ganhou 8kg de massa muscular</span>
-      <p>"Em 4 meses usando o CoreXFit AI, ganhei 8kg de massa muscular sem precisar de personal trainer. A IA ajustou minha dieta toda semana automaticamente!"</p>
-    </div>
-
-    <div class="testimonial">
-      <div class="avatar">CS</div>
-      <h3>Camila Santos</h3>
-      <span>Perdeu 12kg de gordura</span>
-      <p>"Nunca imaginei que um app pudesse substituir meu nutricionista. O CoreXFit AI calculou tudo certinho e eu perdi 12kg em 5 meses!"</p>
-    </div>
-
-    <div class="testimonial">
-      <div class="avatar">RO</div>
-      <h3>Rafael Oliveira</h3>
-      <span>Atleta amador</span>
-      <p>"A função de escanear alimentos com a câmera é sensacional. Tiro a foto e ele já adiciona tudo no meu diário. Praticidade total!"</p>
-    </div>
-
-    <div class="testimonial">
-      <div class="avatar">JC</div>
-      <h3>Juliana Costa</h3>
-      <span>Mãe fitness</span>
-      <p>"Com a rotina corrida, o CoreXFit AI me deu treinos de 40 minutos super eficientes. Melhor investimento que fiz pra minha saúde!"</p>
-    </div>
-
-    <div class="testimonial">
-      <div class="avatar">BA</div>
-      <h3>Bruno Almeida</h3>
-      <span>Perdeu 20kg em 6 meses</span>
-      <p>"O app ajustou meus macros automaticamente quando mudei meu objetivo de cutting pra manutenção. Inteligente demais!"</p>
-    </div>
-
-    <div class="testimonial">
-      <div class="avatar">ML</div>
-      <h3>Mariana Lima</h3>
-      <span>Personal Trainer</span>
-      <p>"Eu uso o CoreXFit AI até com meus alunos. A precisão dos cálculos e a personalização dos treinos é impressionante."</p>
-    </div>
-
+  <!-- CURSOR HALTERE -->
+  <div id="custom-cursor">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- haltere SVG desenhado em path -->
+      <rect x="2" y="15" width="7" height="6" rx="2.5" fill="#2d7aff" />
+      <rect x="4" y="12" width="4" height="12" rx="2" fill="#6c5ce7" />
+      <rect x="27" y="15" width="7" height="6" rx="2.5" fill="#2d7aff" />
+      <rect x="28" y="12" width="4" height="12" rx="2" fill="#6c5ce7" />
+      <rect x="10" y="16.5" width="16" height="3" rx="1.5" fill="#2d7aff" />
+      <rect x="9" y="14" width="4" height="8" rx="2" fill="#4a90ff" />
+      <rect x="23" y="14" width="4" height="8" rx="2" fill="#4a90ff" />
+    </svg>
   </div>
-</section>
 
+  <canvas id="trail"></canvas>
 
-    <!-- CTA -->
-    <section id="cta">
-        <div class="content fade-up">
-            <h2>Transforme seu corpo com <span class="text-gradient">inteligência artificial</span>.</h2>
-            <p>Comece agora sua jornada fitness com o CoreXFit AI.</p>
-            <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
-                class="glow-btn glow-btn-large btn-animado">Acessar o Aplicativo</a>
+  <nav>
+    <div class="inner">
+      <span class="logo" id="nav-logo">CoreXFit AI</span>
+      <div class="links">
+        <button onclick="scrollSection('hero')">Casa</button>
+        <button onclick="scrollSection('dieta')">Dieta por IA</button>
+        <button onclick="scrollSection('treino')">Treino por IA</button>
+        <button onclick="scrollSection('diferencial')">Nosso Diferencial</button>
+      </div>
+      <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
+        <span class="hb-line"></span>
+        <span class="hb-line"></span>
+        <span class="hb-line"></span>
+      </button>
+      <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer" class="cta">Acessar
+        Aplicativo</a>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button onclick="scrollSection('hero');toggleMenu()">
+      <span class="mm-icon" style="background:rgba(45,122,255,.12)">🏠</span>
+      Casa
+      <span class="mm-arrow">›</span>
+    </button>
+    <div class="mm-sep"></div>
+    <button onclick="scrollSection('dieta');toggleMenu()">
+      <span class="mm-icon" style="background:rgba(52,211,153,.12)">🥗</span>
+      Dieta por IA
+      <span class="mm-arrow">›</span>
+    </button>
+    <div class="mm-sep"></div>
+    <button onclick="scrollSection('treino');toggleMenu()">
+      <span class="mm-icon" style="background:rgba(251,191,36,.12)">🏋️</span>
+      Treino por IA
+      <span class="mm-arrow">›</span>
+    </button>
+    <div class="mm-sep"></div>
+    <button onclick="scrollSection('diferencial');toggleMenu()">
+      <span class="mm-icon" style="background:rgba(167,139,250,.12)">⚡</span>
+      Nosso Diferencial
+      <span class="mm-arrow">›</span>
+    </button>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <video autoplay loop muted playsinline>
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="content fade-up">
+      <h1>Inteligência artificial aplicada ao <span class="text-gradient">seu corpo</span></h1>
+      <p>O CoreXFit AI calcula automaticamente sua dieta, treino e evolução de acordo com suas metas, restrições e
+        objetivos.</p>
+      <div class="btns">
+        <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
+          class="glow-btn btn-animado">Começar Agora</a>
+        <button class="btn-outline btn-animado" onclick="scrollSection('sobre')">Ver Como Funciona</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="container">
+      <h2 class="fade-up">O que é o <span class="text-gradient">CoreXFit AI</span>?</h2>
+      <div class="card-glass about-card fade-up">
+        <p>O CoreXFit AI é um aplicativo de personal trainer com inteligência artificial que cria dietas e planos de
+          treino personalizados de acordo com seus objetivos, limitações e rotina.</p>
+        <p>O aplicativo calcula automaticamente calorias, proteínas, carboidratos e gorduras ideais para seu corpo e
+          ajusta tudo automaticamente conforme sua evolução.</p>
+        <p>Com tecnologia de IA, o CoreXFit AI analisa seus dados e cria estratégias personalizadas para:</p>
+        <ul class="feature-list">
+          <li><span class="dot"></span> Ganho de massa muscular</li>
+          <li><span class="dot"></span> Perda de gordura</li>
+          <li><span class="dot"></span> Manutenção de peso</li>
+          <li><span class="dot"></span> Melhora da saúde geral</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+     SEÇÃO INTER-STYLE — CELULAR FLUTUANTE COM LOGO DENTRO
+     ======================================================== -->
+  <section id="telas" style="padding:0;">
+    <div id="phone-showcase">
+      <div id="phone-sticky">
+
+        <div id="ps-bg"></div>
+
+        <!-- TAGLINE TOPO -->
+        <div id="ps-top-text">
+          <div id="ps-tag">CoreXFit AI</div>
+          <div id="ps-headline">Escolha Inteligente.<br><span>Escolha CoreX Fit AI.</span></div>
         </div>
-    </section>
 
-    <!-- FOOTER -->
-    <footer>© 2026 CoreXFit AI. Todos os direitos reservados.</footer>
+        <!-- PHONE WRAPPER — float eterno + voo scroll -->
+        <div id="ps-phone-wrap">
+          <video id="ps-video" src="celular.mp4" autoplay loop muted playsinline></video>
+        </div><!-- /ps-phone-wrap -->
 
-    <script>
-        function scrollTo(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
-        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open') }
+        <!-- TAGLINE INFERIOR -->
+        <div id="ps-tagline">
+          <div id="ps-tagline-line1">Dieta. Treino. Evolução.</div>
+          <div id="ps-tagline-line2">Tudo calculado pela IA.</div>
+        </div>
 
-        // Fade-up on scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
-        }, { threshold: 0.15, rootMargin: '-40px' });
-        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      </div><!-- /phone-sticky -->
+    </div><!-- /phone-showcase -->
+  </section>
 
-        // Hero fade-up on load
-        window.addEventListener('load', () => {
-            document.querySelector('#hero .fade-up')?.classList.add('visible');
+  <!-- DIETA -->
+  <section id="dieta">
+    <div class="feature-row fade-up">
+      <div class="img-side">
+        <div class="card-glass"><img src="imagem_progresso_macro.jpeg" alt="Dieta Inteligente"></div>
+      </div>
+      <div class="text-side">
+        <h2><span class="text-gradient">Dieta Inteligente com IA</span></h2>
+        <p>O CoreXFit AI cria automaticamente sua dieta ideal. Ele calcula calorias, proteínas, carboidratos e gorduras
+          — tudo ajustado automaticamente conforme seu objetivo.</p>
+        <ul>
+          <li><span class="dot-ring"><span class="dot"></span></span> Dieta para bulking</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Dieta para cutting</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Dieta para manutenção</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Ajuste automático de macros</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TREINO -->
+  <section id="treino">
+    <div class="feature-row reverse fade-up">
+      <div class="img-side">
+        <div class="card-glass"><img src="imagem_treino.jpeg" alt="Treino com IA"></div>
+      </div>
+      <div class="text-side">
+        <h2><span class="text-gradient">Plano de Treino com IA</span></h2>
+        <p>O CoreXFit AI cria automaticamente seu plano de treino personalizado.</p>
+        <ul>
+          <li><span class="dot-ring"><span class="dot"></span></span> Treinos personalizados</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Ajustados ao seu objetivo</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Organização semanal</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Treinos de segunda a sexta</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Dia de descanso automático incluído</li>
+          <li><span class="dot-ring"><span class="dot"></span></span> Evolução progressiva dos exercícios</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFERENCIAL -->
+  <section id="diferencial">
+    <div class="container">
+      <h2 class="fade-up">Nosso <span class="text-gradient">Diferencial</span></h2>
+      <div class="feature-row fade-up">
+        <div class="img-side">
+          <div class="card-glass"><img src="imagem_camera.jpeg" alt="IA Vision Camera"></div>
+        </div>
+        <div class="text-side">
+          <p style="font-size:1.2rem;font-weight:600;color:var(--fg);margin-bottom:16px">Com o CoreXFit AI, você pode
+            simplesmente tirar uma foto do alimento.</p>
+          <p>A inteligência artificial identifica o alimento automaticamente e calcula:</p>
+          <ul>
+            <li><span class="dot-ring"><span class="dot"></span></span> Calorias</li>
+            <li><span class="dot-ring"><span class="dot"></span></span> Proteínas</li>
+            <li><span class="dot-ring"><span class="dot"></span></span> Carboidratos</li>
+            <li><span class="dot-ring"><span class="dot"></span></span> Gorduras</li>
+          </ul>
+          <p style="margin-top:20px">E adiciona automaticamente na sua meta diária.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS MODERNOS -->
+  <section class="testimonials">
+    <div class="test-header">
+      <h2>Resultados de quem <span class="text-gradient">já transformou</span></h2>
+      <p>Mais de 10.000 pessoas já usam o CoreXFit AI para alcançar seus objetivos</p>
+    </div>
+    <div class="test-track-wrap">
+      <div class="test-track" id="testTrack">
+
+        <!-- SET 1 -->
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Em 4 meses ganhei 8kg de massa muscular sem precisar de personal trainer. A IA ajustou
+            minha dieta toda semana automaticamente.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#2d7aff,#6c5ce7)">LF</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Lucas Ferreira</div>
+              <div class="tcard-role">Estudante · 23 anos</div>
+              <span class="tcard-badge tcard-badge-blue">+8kg massa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Nunca imaginei que um app pudesse substituir meu nutricionista. O CoreXFit AI calculou
+            tudo certinho e eu perdi 12kg em 5 meses.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">CS</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Camila Santos</div>
+              <div class="tcard-role">Designer · 29 anos</div>
+              <span class="tcard-badge tcard-badge-green">-12kg gordura</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">A função de escanear alimentos com a câmera é sensacional. Tiro a foto e ele já adiciona
+            tudo no meu diário. Praticidade absurda.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">RO</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Rafael Oliveira</div>
+              <div class="tcard-role">Atleta amador · 31 anos</div>
+              <span class="tcard-badge tcard-badge-blue">IA Vision</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Com a rotina corrida, o CoreXFit me deu treinos de 40 minutos super eficientes. Melhor
+            investimento que fiz pra minha saúde em anos.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">JC</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Juliana Costa</div>
+              <div class="tcard-role">Mãe e empreendedora · 35 anos</div>
+              <span class="tcard-badge tcard-badge-green">Mais disposição</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">O app ajustou meus macros automaticamente quando mudei o objetivo de cutting pra
+            manutenção. Sem precisar recalcular nada. Inteligente demais.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#fa709a,#fee140)">BA</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Bruno Almeida</div>
+              <div class="tcard-role">Engenheiro · 28 anos</div>
+              <span class="tcard-badge tcard-badge-green">-20kg em 6 meses</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Eu uso o CoreXFit até com meus alunos. A precisão dos cálculos e a personalização dos
+            treinos é impressionante para quem entende da área.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">ML</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Mariana Lima</div>
+              <div class="tcard-role">Personal Trainer · CREF ativo</div>
+              <span class="tcard-badge tcard-badge-amber">Profissional</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SET 2 — duplicado para loop contínuo sem gap -->
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Em 4 meses ganhei 8kg de massa muscular sem precisar de personal trainer. A IA ajustou
+            minha dieta toda semana automaticamente.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#2d7aff,#6c5ce7)">LF</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Lucas Ferreira</div>
+              <div class="tcard-role">Estudante · 23 anos</div>
+              <span class="tcard-badge tcard-badge-blue">+8kg massa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Nunca imaginei que um app pudesse substituir meu nutricionista. O CoreXFit AI calculou
+            tudo certinho e eu perdi 12kg em 5 meses.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">CS</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Camila Santos</div>
+              <div class="tcard-role">Designer · 29 anos</div>
+              <span class="tcard-badge tcard-badge-green">-12kg gordura</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">A função de escanear alimentos com a câmera é sensacional. Tiro a foto e ele já adiciona
+            tudo no meu diário. Praticidade absurda.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">RO</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Rafael Oliveira</div>
+              <div class="tcard-role">Atleta amador · 31 anos</div>
+              <span class="tcard-badge tcard-badge-blue">IA Vision</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Com a rotina corrida, o CoreXFit me deu treinos de 40 minutos super eficientes. Melhor
+            investimento que fiz pra minha saúde em anos.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">JC</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Juliana Costa</div>
+              <div class="tcard-role">Mãe e empreendedora · 35 anos</div>
+              <span class="tcard-badge tcard-badge-green">Mais disposição</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">O app ajustou meus macros automaticamente quando mudei o objetivo de cutting pra
+            manutenção. Sem precisar recalcular nada. Inteligente demais.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#fa709a,#fee140)">BA</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Bruno Almeida</div>
+              <div class="tcard-role">Engenheiro · 28 anos</div>
+              <span class="tcard-badge tcard-badge-green">-20kg em 6 meses</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-quote">"</div>
+          <div class="tcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+          <p class="tcard-text">Eu uso o CoreXFit até com meus alunos. A precisão dos cálculos e a personalização dos
+            treinos é impressionante para quem entende da área.</p>
+          <div class="tcard-sep"></div>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">ML</div>
+            <div class="tcard-info">
+              <div class="tcard-name">Mariana Lima</div>
+              <div class="tcard-role">Personal Trainer · CREF ativo</div>
+              <span class="tcard-badge tcard-badge-amber">Profissional</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /test-track -->
+    </div><!-- /test-track-wrap -->
+  </section>
+
+  <!-- ============================================================
+     CONTADOR DE RESULTADOS AO VIVO
+     ============================================================ -->
+  <section id="counters">
+    <div class="container">
+      <p class="counter-eyebrow">Resultados em tempo real</p>
+      <div class="counter-grid">
+        <div class="counter-card fade-up">
+          <div class="counter-num" data-target="12847" data-suffix="kg">0kg</div>
+          <div class="counter-label">de gordura eliminada pelos usuários</div>
+          <div class="counter-bar">
+            <div class="counter-bar-fill" style="width:78%"></div>
+          </div>
+        </div>
+        <div class="counter-card fade-up">
+          <div class="counter-num" data-target="38420" data-suffix="">0</div>
+          <div class="counter-label">treinos gerados pela IA este mês</div>
+          <div class="counter-bar">
+            <div class="counter-bar-fill" style="width:92%"></div>
+          </div>
+        </div>
+        <div class="counter-card fade-up">
+          <div class="counter-num" data-target="9631" data-suffix="kg">0kg</div>
+          <div class="counter-label">de massa muscular conquistada</div>
+          <div class="counter-bar">
+            <div class="counter-bar-fill" style="width:61%"></div>
+          </div>
+        </div>
+        <div class="counter-card fade-up">
+          <div class="counter-num" data-target="4.9" data-suffix="★" data-decimal="1">0★</div>
+          <div class="counter-label">avaliação média na loja</div>
+          <div class="counter-bar">
+            <div class="counter-bar-fill" style="width:98%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     SLIDER ANTES / DEPOIS
+     ============================================================ -->
+  <section id="before-after">
+    <div class="container">
+      <h2 class="fade-up">A <span class="text-gradient">transformação</span> é real</h2>
+      <p class="ba-sub fade-up">Arraste para ver a diferença de 4 meses com o CoreXFit AI</p>
+      <div class="ba-wrap fade-up">
+        <!-- ANTES -->
+        <div class="ba-side ba-before">
+          <div class="ba-label ba-label-left">ANTES</div>
+          <div class="ba-content">
+            <div class="ba-stats">
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#f87171">94kg</span><span
+                  class="ba-stat-key">Peso</span></div>
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#f87171">28%</span><span
+                  class="ba-stat-key">Gordura</span></div>
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#f87171">Sem</span><span
+                  class="ba-stat-key">Plano</span></div>
+            </div>
+            <div class="ba-body-wrap">
+              <!-- silhueta "antes" — mais arredondada -->
+              <svg viewBox="0 0 120 220" class="ba-body-svg">
+                <ellipse cx="60" cy="50" rx="26" ry="26" fill="#2a2f4a" />
+                <ellipse cx="60" cy="120" rx="40" ry="52" fill="#2a2f4a" />
+                <rect x="22" y="85" width="18" height="65" rx="9" fill="#2a2f4a" />
+                <rect x="80" y="85" width="18" height="65" rx="9" fill="#2a2f4a" />
+                <rect x="36" y="170" width="18" height="48" rx="9" fill="#2a2f4a" />
+                <rect x="66" y="170" width="18" height="48" rx="9" fill="#2a2f4a" />
+                <!-- marcadores de gordura -->
+                <ellipse cx="60" cy="118" rx="34" ry="28" fill="none" stroke="#f87171" stroke-width="1.5"
+                  stroke-dasharray="4 3" opacity="0.5" />
+                <ellipse cx="60" cy="118" rx="24" ry="20" fill="none" stroke="#f87171" stroke-width="1"
+                  stroke-dasharray="3 3" opacity="0.3" />
+              </svg>
+            </div>
+            <div class="ba-tags">
+              <span class="ba-tag ba-tag-bad">Sem energia</span>
+              <span class="ba-tag ba-tag-bad">Dieta aleatória</span>
+              <span class="ba-tag ba-tag-bad">Sem progresso</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEPOIS -->
+        <div class="ba-side ba-after">
+          <div class="ba-label ba-label-right">DEPOIS</div>
+          <div class="ba-content">
+            <div class="ba-stats">
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#34d399">79kg</span><span
+                  class="ba-stat-key">Peso</span></div>
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#34d399">14%</span><span
+                  class="ba-stat-key">Gordura</span></div>
+              <div class="ba-stat"><span class="ba-stat-val" style="color:#34d399">+8kg</span><span
+                  class="ba-stat-key">Músculo</span></div>
+            </div>
+            <div class="ba-body-wrap">
+              <!-- silhueta "depois" — mais definida -->
+              <svg viewBox="0 0 120 220" class="ba-body-svg">
+                <ellipse cx="60" cy="50" rx="24" ry="24" fill="#1e2a4a" />
+                <!-- torso em V -->
+                <polygon points="25,82 95,82 82,172 38,172" fill="#1e2a4a" />
+                <!-- ombros largos -->
+                <ellipse cx="22" cy="88" rx="16" ry="10" fill="#1e2a4a" />
+                <ellipse cx="98" cy="88" rx="16" ry="10" fill="#1e2a4a" />
+                <!-- braços -->
+                <rect x="8" y="88" width="16" height="62" rx="8" fill="#1e2a4a" />
+                <rect x="96" y="88" width="16" height="62" rx="8" fill="#1e2a4a" />
+                <!-- pernas -->
+                <rect x="36" y="170" width="19" height="48" rx="9" fill="#1e2a4a" />
+                <rect x="65" y="170" width="19" height="48" rx="9" fill="#1e2a4a" />
+                <!-- linhas de definição muscular -->
+                <line x1="60" y1="86" x2="60" y2="168" stroke="#34d399" stroke-width="1" opacity="0.4" />
+                <line x1="45" y1="100" x2="75" y2="100" stroke="#34d399" stroke-width="1" opacity="0.3" />
+                <line x1="42" y1="118" x2="78" y2="118" stroke="#34d399" stroke-width="1" opacity="0.3" />
+                <line x1="40" y1="136" x2="80" y2="136" stroke="#34d399" stroke-width="1" opacity="0.3" />
+                <!-- glow -->
+                <ellipse cx="60" cy="120" rx="35" ry="45" fill="none" stroke="#34d399" stroke-width="1"
+                  opacity="0.15" />
+              </svg>
+            </div>
+            <div class="ba-tags">
+              <span class="ba-tag ba-tag-good">Cheio de energia</span>
+              <span class="ba-tag ba-tag-good">Dieta por IA</span>
+              <span class="ba-tag ba-tag-good">Evolução constante</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIVISOR ARRASTÁVEL -->
+        <div class="ba-divider" id="baDivider">
+          <div class="ba-divider-line"></div>
+          <div class="ba-divider-handle">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 10L2 10M2 10L5 7M2 10L5 13" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M14 10L18 10M18 10L15 7M18 10L15 13" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     CALCULADORA DE MACROS COM IA
+     ============================================================ -->
+  <section id="calculadora">
+    <div class="container">
+      <h2 class="fade-up">Calcule seus <span class="text-gradient">macros agora</span></h2>
+      <p class="calc-sub fade-up">A mesma IA do CoreXFit calculando seus macros em tempo real</p>
+      <div class="calc-wrap fade-up">
+        <div class="calc-form">
+          <div class="calc-row">
+            <div class="calc-field">
+              <label>Peso (kg)</label>
+              <input type="number" id="cPeso" placeholder="70" min="30" max="250">
+            </div>
+            <div class="calc-field">
+              <label>Altura (cm)</label>
+              <input type="number" id="cAltura" placeholder="175" min="100" max="250">
+            </div>
+            <div class="calc-field">
+              <label>Idade</label>
+              <input type="number" id="cIdade" placeholder="25" min="10" max="100">
+            </div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field">
+              <label>Sexo</label>
+              <select id="cSexo">
+                <option value="m">Masculino</option>
+                <option value="f">Feminino</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>Atividade</label>
+              <select id="cAtividade">
+                <option value="1.2">Sedentário</option>
+                <option value="1.375">Leve (1-3x/sem)</option>
+                <option value="1.55" selected>Moderado (3-5x/sem)</option>
+                <option value="1.725">Intenso (6-7x/sem)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label>Objetivo</label>
+              <select id="cObjetivo">
+                <option value="cut">Perder gordura</option>
+                <option value="maint">Manutenção</option>
+                <option value="bulk" selected>Ganhar massa</option>
+              </select>
+            </div>
+          </div>
+          <button class="calc-btn" onclick="calcularMacros()">
+            <span class="calc-btn-icon">⚡</span> Calcular com IA
+          </button>
+        </div>
+
+        <div class="calc-result" id="calcResult">
+          <div class="calc-result-placeholder">
+            <div class="calc-placeholder-icon">🤖</div>
+            <p>Preencha os dados ao lado e veja seus macros calculados pela IA do CoreXFit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="content fade-up">
+      <h2>Transforme seu corpo com <span class="text-gradient">inteligência artificial</span>.</h2>
+      <p>Comece agora sua jornada fitness com o CoreXFit AI.</p>
+      <a href="https://cocky-corex-fit.base44.app" target="_blank" rel="noopener noreferrer"
+        class="glow-btn glow-btn-large btn-animado">Acessar o Aplicativo</a>
+    </div>
+  </section>
+
+  <footer>© 2026 CoreXFit AI. Todos os direitos reservados.</footer>
+
+  <!-- MUSIC PLAYER -->
+  <div class="music-player" onclick="toggleMusic()">
+    <div class="music-icon" id="musicIcon">▶</div>
+  </div>
+  <audio id="bgMusic" loop>
+    <source src="corex-ai.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+  <script>
+    /* --- utils --- */
+    function scrollSection(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const btn = document.getElementById('hamburgerBtn');
+      const isOpen = menu.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+
+      if (isOpen) {
+        /* stagger de entrada dos itens */
+        const items = menu.querySelectorAll('button');
+        items.forEach((el, i) => {
+          el.style.animationDelay = (i * 60) + 'ms';
+          el.classList.remove('mm-in');
+          void el.offsetWidth; /* reflow */
+          el.classList.add('mm-in');
         });
-
-        const container = document.getElementById("testimonialContainer");
-
-let scrollAmount = 0;
-
-function autoScroll() {
-  scrollAmount += 1;
-
-  if (scrollAmount >= container.scrollWidth / 2) {
-    scrollAmount = 0;
-  }
-
-  container.scrollTo({
-    left: scrollAmount,
-    behavior: "smooth"
-  });
-}
-
-setInterval(autoScroll, 40);
-
-function scrollSection(id) {
-    const section = document.getElementById(id);
-
-    if (section) {
-        section.scrollIntoView({
-            behavior: "smooth"
-        });
+      }
     }
-}
 
-    </script>
+    /* --- fade-up --- */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
+    }, { threshold: 0.15, rootMargin: '-40px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    window.addEventListener('load', () => { document.querySelector('#hero .fade-up')?.classList.add('visible') });
 
-   <!-- PLAYER DE MÚSICA -->
+    /* --- music --- */
+    const music = document.getElementById('bgMusic');
+    const icon = document.getElementById('musicIcon');
+    let playing = false;
+    function toggleMusic() {
+      if (playing) { music.pause(); icon.innerHTML = '▶'; playing = false; }
+      else { music.volume = 0.4; music.play(); icon.innerHTML = '⏸'; playing = true; }
+    }
 
-<div class="music-player" onclick="toggleMusic()">
-  <div class="music-icon" id="musicIcon">▶</div>
-</div>
+    /* --- mouse trail --- */
+    const canvas = document.getElementById('trail');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    let pts = [];
+    document.addEventListener('mousemove', e => pts.push({ x: e.clientX, y: e.clientY, life: 20 }));
+    (function animTrail() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pts.forEach((p, i) => {
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(59,130,246,' + (p.life / 20) + ')'; ctx.fill();
+        p.life--; if (p.life <= 0) pts.splice(i, 1);
+      });
+      requestAnimationFrame(animTrail);
+    })();
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight });
+  </script>
 
-<audio id="bgMusic" loop>
-  <source src="corex-ai.mp3" type="audio/mpeg">
-</audio>
+  <script>
+    /* ============================================================
+       INTER-STYLE — CELULAR VOA ENTRANDO E SAINDO COM O SCROLL
+       ============================================================ */
+    (function () {
+      const wrap = document.getElementById('ps-phone-wrap');
+      const showcase = document.getElementById('phone-showcase');
+      if (!wrap || !showcase) return;
 
+      function ease(t) { return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t }
 
-<script>
+      function onScroll() {
+        const rect = showcase.getBoundingClientRect();
+        const total = showcase.offsetHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        const p = Math.max(0, Math.min(1, scrolled / total));
 
-const music = document.getElementById("bgMusic");
-const icon = document.getElementById("musicIcon");
+        /* Zonas:
+           0.00 → 0.25  entrada — voa de baixo pra cima
+           0.25 → 0.75  estável — float eterno
+           0.75 → 1.00  saída   — voa pra cima e some
+        */
+        const enterP = ease(Math.max(0, Math.min(1, p / 0.25)));
+        const exitP = ease(Math.max(0, Math.min(1, (p - 0.75) / 0.25)));
+        const stable = p >= 0.25 && p < 0.75;
 
-let playing = false;
+        if (stable) {
+          if (!wrap.classList.contains('inter-float')) {
+            wrap.style.cssText = 'opacity:1;transform:translateY(0) scale(1);';
+            wrap.classList.add('inter-float');
+          }
+          return;
+        }
 
-function toggleMusic(){
+        wrap.classList.remove('inter-float');
 
-if(playing){
-music.pause();
-icon.innerHTML = "▶";
-playing = false;
+        if (p < 0.25) {
+          /* entrada: sobe de baixo */
+          const ty = 140 * (1 - enterP);
+          const sc = 0.82 + 0.18 * enterP;
+          wrap.style.cssText = `opacity:${enterP};transform:translateY(${ty}px) scale(${sc});`;
+        } else {
+          /* saída: voa pra cima */
+          const ty = -140 * exitP;
+          const sc = 1 - 0.18 * exitP;
+          wrap.style.cssText = `opacity:${1 - exitP};transform:translateY(${ty}px) scale(${sc});`;
+        }
+      }
 
-}else{
-music.volume = 0.4;
-music.play();
-icon.innerHTML = "⏸";
-playing = true;
-}
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
 
-}
+  <script>
+    /* ── LOGO ANIMATION — letra por letra ao carregar ── */
+    (function () {
+      const logo = document.getElementById('nav-logo');
+      if (!logo) return;
 
-</script>
-    
-<script>
+      const text = logo.textContent;
+      const DELAY = 80;   /* ms entre cada letra */
+      const SHIMMER = text.length * DELAY + 120; /* shimmer começa após todas caírem */
 
-const canvas = document.getElementById("trail");
-const ctx = canvas.getContext("2d");
+      /* constrói as letras */
+      logo.innerHTML = '';
+      [...text].forEach((char, i) => {
+        const span = document.createElement('span');
+        span.className = 'logo-letter';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        span.style.animationDelay = (i * DELAY) + 'ms';
+        logo.appendChild(span);
+      });
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+      /* shimmer varre após as letras */
+      setTimeout(() => {
+        const sh = document.createElement('span');
+        sh.className = 'logo-shimmer';
+        logo.appendChild(sh);
+        /* remove após animação */
+        setTimeout(() => sh.remove(), 600);
+      }, SHIMMER);
+    })();
+  </script>
 
-let points = [];
+  <script>
+    /* ── CURSOR HALTERE ── */
+    (function () {
+      const cur = document.getElementById('custom-cursor');
+      let mx = 0, my = 0, cx = 0, cy = 0;
 
-document.addEventListener("mousemove", function(e){
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.opacity = '1';
+      });
+      document.addEventListener('mouseleave', () => cur.style.opacity = '0');
+      document.addEventListener('mousedown', () => { cur.classList.remove('cur-click'); void cur.offsetWidth; cur.classList.add('cur-click'); });
+      document.addEventListener('mouseup', () => cur.classList.remove('cur-click'));
 
-points.push({
-x:e.clientX,
-y:e.clientY,
-life:20
-});
+      (function loop() {
+        cx += (mx - cx) * 0.18;
+        cy += (my - cy) * 0.18;
+        cur.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+        requestAnimationFrame(loop);
+      })();
+    })();
 
-});
+    /* ── CONTADORES AO VIVO ── */
+    (function () {
+      const cards = document.querySelectorAll('.counter-card');
+      const bars = document.querySelectorAll('.counter-bar-fill');
 
-function animate(){
+      function animCount(el) {
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const decimal = parseInt(el.dataset.decimal || '0');
+        const dur = 1800;
+        const start = performance.now();
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+        function tick(now) {
+          const p = Math.min(1, (now - start) / dur);
+          const ep = 1 - Math.pow(1 - p, 3);
+          const val = target * ep;
+          el.textContent = (decimal ? val.toFixed(decimal) : Math.round(val).toLocaleString('pt-BR')) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
 
-points.forEach((p,index)=>{
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          // anima número
+          const num = e.target.querySelector('.counter-num');
+          if (num) animCount(num);
+          // anima barra
+          const bar = e.target.querySelector('.counter-bar-fill');
+          if (bar) setTimeout(() => bar.style.width = bar.style.width, 50);
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
 
-ctx.beginPath();
-ctx.arc(p.x,p.y,2,0,Math.PI*2);
-ctx.fillStyle="rgba(59,130,246,"+(p.life/20)+")";
-ctx.fill();
+      cards.forEach(c => io.observe(c));
 
-p.life--;
+      // anima barras também
+      const barIO = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const target = e.target.style.width;
+          e.target.style.width = '0%';
+          setTimeout(() => e.target.style.width = target, 80);
+          barIO.unobserve(e.target);
+        });
+      }, { threshold: 0.4 });
+      bars.forEach(b => barIO.observe(b));
+    })();
 
-if(p.life<=0){
-points.splice(index,1);
-}
+    /* ── SLIDER ANTES / DEPOIS ── */
+    (function () {
+      const wrap = document.getElementById('baDivider')?.closest('.ba-wrap');
+      const divider = document.getElementById('baDivider');
+      const before = document.querySelector('.ba-before');
+      const after = document.querySelector('.ba-after');
+      if (!wrap || !divider) return;
 
-});
+      let dragging = false;
 
-requestAnimationFrame(animate);
+      function setPos(x) {
+        const rect = wrap.getBoundingClientRect();
+        const pct = Math.max(10, Math.min(90, ((x - rect.left) / rect.width) * 100));
+        divider.style.left = pct + '%';
+        before.style.flex = '0 0 ' + pct + '%';
+        after.style.flex = '0 0 ' + (100 - pct) + '%';
+      }
 
-}
+      divider.addEventListener('mousedown', e => { dragging = true; wrap.classList.add('ba-dragging'); e.preventDefault(); });
+      divider.addEventListener('touchstart', e => { dragging = true; wrap.classList.add('ba-dragging'); e.preventDefault(); }, { passive: false });
+      window.addEventListener('mouseup', () => { dragging = false; wrap.classList.remove('ba-dragging'); });
+      window.addEventListener('touchend', () => { dragging = false; wrap.classList.remove('ba-dragging'); });
+      window.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+      window.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX); }, { passive: false });
+    })();
 
-animate();
+    /* ── CALCULADORA DE MACROS ── */
+    function calcularMacros() {
+      const peso = parseFloat(document.getElementById('cPeso').value);
+      const altura = parseFloat(document.getElementById('cAltura').value);
+      const idade = parseFloat(document.getElementById('cIdade').value);
+      const sexo = document.getElementById('cSexo').value;
+      const ativ = parseFloat(document.getElementById('cAtividade').value);
+      const obj = document.getElementById('cObjetivo').value;
+      const res = document.getElementById('calcResult');
 
-</script>
+      if (!peso || !altura || !idade || peso < 30 || altura < 100 || idade < 10) {
+        res.innerHTML = '<div class="calc-result-placeholder"><div class="calc-placeholder-icon">⚠️</div><p>Preencha todos os campos corretamente!</p></div>';
+        return;
+      }
 
+      /* Harris-Benedict */
+      const tmb = sexo === 'm'
+        ? 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * idade)
+        : 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * idade);
+
+      let tdee = tmb * ativ;
+
+      const goalLabels = { cut: 'Perda de Gordura 🔥', maint: 'Manutenção ⚖️', bulk: 'Ganho de Massa 💪' };
+      if (obj === 'cut') tdee -= 400;
+      if (obj === 'bulk') tdee += 350;
+      tdee = Math.round(tdee);
+
+      /* macros */
+      const prot = Math.round(peso * (obj === 'bulk' ? 2.2 : 2.0));
+      const fat = Math.round((tdee * 0.25) / 9);
+      const carb = Math.round((tdee - prot * 4 - fat * 9) / 4);
+
+      const pProt = Math.round((prot * 4 / tdee) * 100);
+      const pFat = Math.round((fat * 9 / tdee) * 100);
+      const pCarb = Math.round((carb * 4 / tdee) * 100);
+
+      res.innerHTML = `
+    <div class="calc-output">
+      <div class="calc-output-title">Seus macros personalizados</div>
+      <div class="calc-output-goal">${goalLabels[obj]}</div>
+      <div class="calc-kcal-block">
+        <div class="calc-kcal-num">${tdee.toLocaleString('pt-BR')}</div>
+        <div class="calc-kcal-label">calorias diárias</div>
+      </div>
+      <div class="calc-macro-bars">
+        <div class="calc-macro-row">
+          <div class="calc-macro-meta">
+            <span class="calc-macro-name" style="color:#7c8fff">Proteína</span>
+            <span class="calc-macro-val">${prot}g · ${pProt}%</span>
+          </div>
+          <div class="calc-macro-track"><div class="calc-macro-fill" style="background:#7c8fff;width:${pProt}%"></div></div>
+        </div>
+        <div class="calc-macro-row">
+          <div class="calc-macro-meta">
+            <span class="calc-macro-name" style="color:#34d399">Carboidratos</span>
+            <span class="calc-macro-val">${carb}g · ${pCarb}%</span>
+          </div>
+          <div class="calc-macro-track"><div class="calc-macro-fill" style="background:#34d399;width:${pCarb}%"></div></div>
+        </div>
+        <div class="calc-macro-row">
+          <div class="calc-macro-meta">
+            <span class="calc-macro-name" style="color:#fbbf24">Gorduras</span>
+            <span class="calc-macro-val">${fat}g · ${pFat}%</span>
+          </div>
+          <div class="calc-macro-track"><div class="calc-macro-fill" style="background:#fbbf24;width:${pFat}%"></div></div>
+        </div>
+      </div>
+      <div class="calc-cta-hint">Quer que a IA ajuste isso automaticamente todo dia? <a href="https://cocky-corex-fit.base44.app" target="_blank">Começar agora →</a></div>
+    </div>`;
+
+      /* anima barras */
+      setTimeout(() => {
+        res.querySelectorAll('.calc-macro-fill').forEach(b => {
+          const w = b.style.width; b.style.width = '0%';
+          setTimeout(() => b.style.width = w, 30);
+        });
+      }, 50);
+    }
+  </script>
 
 </body>
 
